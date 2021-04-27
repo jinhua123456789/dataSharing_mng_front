@@ -1,0 +1,9 @@
+build/*.js
+public
+dist
+src/*
+mock
+src/utils
+src/layout/mixin/ResizeHandler.js
+src/store/modules/user.js
+src/utils/request.js

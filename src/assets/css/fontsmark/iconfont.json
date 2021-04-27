@@ -1,0 +1,37 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1524240",
+      "name": "地标",
+      "font_class": "dibiao",
+      "unicode": "e65d",
+      "unicode_decimal": 58973
+    },
+    {
+      "icon_id": "5265320",
+      "name": "地标",
+      "font_class": "dibiao1",
+      "unicode": "e520",
+      "unicode_decimal": 58656
+    },
+    {
+      "icon_id": "9685193",
+      "name": "上报-地标",
+      "font_class": "dibiao2",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "15037064",
+      "name": "地标",
+      "font_class": "dibiao3",
+      "unicode": "e632",
+      "unicode_decimal": 58930
+    }
+  ]
+}

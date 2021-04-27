@@ -1,0 +1,63 @@
+import request from '@/utils/request'
+
+export function fetchList(query) {
+  return request({
+    url: 'pcs-org/dpt/list',
+    // url: 'dpt/list',
+    method: 'get',
+    params: query
+  })
+}
+
+export function fetchByName(name) {
+  return request({
+    url: 'dpt/findByName',
+    method: 'get',
+    params: name
+  })
+}
+export function fetchDeptTree(query) {
+  return request({
+    url: 'dpt/user-tree',
+    method: 'get',
+    params: query
+  })
+}
+
+export function fetchTree(query) {
+  return request({
+    url: '/dpt/tree',
+    method: 'get',
+    params: query
+  })
+}
+
+export function addObj(obj) {
+  return request({
+    url: 'dpt/add',
+    method: 'post',
+    data: obj
+  })
+}
+
+export function getObj(id) {
+  return request({
+    url: 'dpt/' + id,
+    method: 'get'
+  })
+}
+
+export function delObj(id) {
+  return request({
+    url: 'dpt/' + id,
+    method: 'delete'
+  })
+}
+
+export function putObj(obj) {
+  return request({
+    url: 'dpt',
+    method: 'put',
+    data: obj
+  })
+}
