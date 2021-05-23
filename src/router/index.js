@@ -179,6 +179,15 @@ export const constantRoutes = [
     }
   },
   {
+    path: '/userManage',
+    component: () => import('@/views/dataShare/userManage'),
+    hidden: true,
+    name: 'userManage',
+    meta: {
+      title: '外部用户管理'
+    }
+  },
+  {
     path: '/auditSysWholeInfo',
     component: () => import('@/views/portal/audit/auditWholeInfo'),
     hidden: true,
