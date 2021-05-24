@@ -188,6 +188,15 @@ export const constantRoutes = [
     }
   },
   {
+    path: '/dataCheck',
+    component: () => import('@/views/dataShare/dataCheck'),
+    hidden: true,
+    name: 'dataCheck',
+    meta: {
+      title: '数据申请任务管理'
+    }
+  },
+  {
     path: '/auditSysWholeInfo',
     component: () => import('@/views/portal/audit/auditWholeInfo'),
     hidden: true,
