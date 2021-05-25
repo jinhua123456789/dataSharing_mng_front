@@ -64,7 +64,8 @@
         </el-table-column>
         <el-table-column label="性别" align="center" width="140">
           <template slot-scope="{row}">
-            <span>{{ row.gender }}</span>
+            <span v-if="row.gender === 'F'">女</span>
+            <span v-if="row.gender === 'M'">男</span>
           </template>
         </el-table-column>
         <el-table-column label="邮箱" align="center" width="250">
@@ -74,12 +75,18 @@
         </el-table-column>
         <el-table-column label="电话" align="center" width="200">
           <template slot-scope="{row}">
-            <span>{{ row.phone }}</span>
+            <span>{{ row.tel }}</span>
           </template>
         </el-table-column>
         <el-table-column label="机构" align="center" width="350">
           <template slot-scope="{row}">
             <span>{{ row.organization }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="用户类型" align="center" width="350">
+          <template slot-scope="{row}">
+            <span v-if="row.type === 'C'">普通用户</span>
+            <span v-if="row.type === 'A'">管理员</span>
           </template>
         </el-table-column>
 <!--        <el-table-column label="操作 " prop="operation"  align="center" width="250">
@@ -173,7 +180,7 @@
         tables: [],
         total:0,
         deleteVisible:false,
-        listloading:true,
+        listLoading:true,
         blockId:0,
         listQuery:{
           contentName: undefined, //记录筛选条件
@@ -198,18 +205,31 @@
     },
     methods: {
       fetchData(){
-        this.listloading=true
-/*        fetchConciseBlockList().then(response => {
-          this.blockList = response.data
+        this.listLoading = true
+        var that = this
+        this.$axios({
+          method: 'post',
+          url: '/dataShare/user/searchAll',
+          contentType: 'application/json; charset=UTF-8', // 解决415错误
+          headers: {'Content-Type': 'application/json;charset=UTF-8'},
+          dataType: 'json',
+          data: JSON.stringify({page: this.listQuery.page, limit: this.listQuery.limit})
+        }).then(res => { // 注意：后端需要返回userID
+          console.log(res.data)
+/*          that.tables = res.data*/
+          console.log(that.tables)
+          var string1 = res.data //储存数据
+          var dataNum = string1.length //储存数据条数
+          for(var i=0;i<dataNum;i++){
+            var objectToInsert = JSON.parse(string1[i]);
+            that.tables.push(objectToInsert);
+          }
+          that.total = parseInt(that.tables.pop())
+        }).catch(error => {
+          alert(error)
+          console.log(error)
         })
-        fetchMoreConditionConciseContentList(this.listQuery.contentTitle,
-          this.listQuery.blockId,this.listQuery.contentStatus,this.listQuery.auditStatus,
-          this.listQuery.page,this.listQuery.limit).then(response=>{
-          this.tables=response.data.conciseContentInfoDTOList
-          this.total=response.data.total
-          this.listloading=false
-        })*/
-        this.tables=[{
+/*        this.tables=[{
           name: '王小虎',
           gender: '男',
           email: '1959866131@qq.com',
@@ -239,9 +259,9 @@
           email: '1959866131@qq.com',
           phone: '19801205466',
           organization: '北京邮电大学',
-        }]
-        this.total=5
-        this.listloading=false
+        }]*/
+/*        this.total=5*/
+        this.listLoading = false
       },
       deleteInModifyList(blockId) {
         this.deleteVisible = true;
@@ -254,7 +274,7 @@
         this.$router.push({path:"/contentSysModify", query:{id:id}})
       },
 
-      onSearch() {
+      clickSearch() {
         fetchMoreConditionConciseContentList(this.listQuery.contentTitle,
           this.listQuery.blockId,this.listQuery.contentStatus,this.listQuery.auditStatus,
           this.listQuery.page,this.listQuery.limit).then(response=>{

@@ -183,7 +183,6 @@ import {fetchMoreConditionConciseContentList, fetchConciseBlockList, removeBlock
       fetchData(){
         this.listloading=true
 
-
         fetchConciseBlockList().then(response => {
           this.blockList = response.data
         })
