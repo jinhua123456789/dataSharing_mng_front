@@ -11,7 +11,7 @@
     <div class="searchWord">
       <!--  1-搜索框             -->
       <el-form :inline="true" :model="listQuery" class="demo-form-inline">
-        <el-form-item>
+<!--        <el-form-item>
           <el-input v-model="listQuery.contentName"
                     clearable
                     placeholder="姓名"/>
@@ -25,24 +25,26 @@
               :value="item.value">
             </el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item>
           <el-input v-model="listQuery.contentEmail"
                     clearable
+                    style="margin-left: 20px"
                     placeholder="邮箱"/>
         </el-form-item>
-        <el-form-item>
+<!--        <el-form-item>
           <el-input v-model="listQuery.contentPhone"
                     clearable
                     placeholder="手机"/>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item>
           <el-input v-model="listQuery.contentOrganization"
                     clearable
+                    style="margin-left: 20px"
                     placeholder="机构"/>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" @click="clickSearch">查询</el-button>
+          <el-button type="primary" icon="el-icon-search" @click="clickSearch" style="margin-left: 20px">查询</el-button>
           <!--          <el-button type="primary" icon="el-icon-edit" @click="onAdd">新增</el-button>-->
         </el-form-item>
       </el-form>
@@ -152,42 +154,14 @@
       return {
         id:0,
         blockList:[],
-        /*tables: [{
-          name: '王小虎',
-          gender: '男',
-          email: '1959866131@qq.com',
-          phone: '19801205466',
-          organization: '北京邮电大学',
-        }, {
-          name: '王小虎',
-          gender: '男',
-          email: '1959866131@qq.com',
-          phone: '19801205466',
-          organization: '北京邮电大学',
-        }, {
-          name: '王小虎',
-          gender: '男',
-          email: '1959866131@qq.com',
-          phone: '19801205466',
-          organization: '北京邮电大学',
-        }, {
-          name: '王小虎',
-          gender: '男',
-          email: '1959866131@qq.com',
-          phone: '19801205466',
-          organization: '北京邮电大学',
-        }],*/
         tables: [],
         total:0,
         deleteVisible:false,
         listLoading:true,
         blockId:0,
-        listQuery:{
-          contentName: undefined, //记录筛选条件
-          contentGender: undefined,
-          contentEmail: undefined,
-          contentPhone: undefined,
-          contentOrganization: undefined,
+        listQuery:{ //记录筛选条件
+          contentEmail: '',
+          contentOrganization: '',
           page: 1, //记录当前页数
           limit: 10
         },
@@ -205,6 +179,7 @@
     },
     methods: {
       fetchData(){
+        this.tables=[]
         this.listLoading = true
         var that = this
         this.$axios({
@@ -213,7 +188,12 @@
           contentType: 'application/json; charset=UTF-8', // 解决415错误
           headers: {'Content-Type': 'application/json;charset=UTF-8'},
           dataType: 'json',
-          data: JSON.stringify({page: this.listQuery.page, limit: this.listQuery.limit})
+          data: JSON.stringify({
+            email:this.listQuery.contentEmail,
+            organization: this.listQuery.contentOrganization,
+            page: this.listQuery.page,
+            limit: this.listQuery.limit
+          })
         }).then(res => { // 注意：后端需要返回userID
           console.log(res.data)
 /*          that.tables = res.data*/
@@ -229,38 +209,6 @@
           alert(error)
           console.log(error)
         })
-/*        this.tables=[{
-          name: '王小虎',
-          gender: '男',
-          email: '1959866131@qq.com',
-          phone: '19801205466',
-          organization: '北京邮电大学',
-        }, {
-          name: '王小虎',
-          gender: '男',
-          email: '1959866131@qq.com',
-          phone: '19801205466',
-          organization: '北京邮电大学',
-        }, {
-          name: '王小虎',
-          gender: '男',
-          email: '1959866131@qq.com',
-          phone: '19801205466',
-          organization: '北京邮电大学',
-        },{
-          name: '王小虎',
-          gender: '男',
-          email: '1959866131@qq.com',
-          phone: '19801205466',
-          organization: '北京邮电大学',
-        },{
-          name: '王小虎',
-          gender: '男',
-          email: '1959866131@qq.com',
-          phone: '19801205466',
-          organization: '北京邮电大学',
-        }]*/
-/*        this.total=5*/
         this.listLoading = false
       },
       deleteInModifyList(blockId) {
@@ -275,12 +223,8 @@
       },
 
       clickSearch() {
-        fetchMoreConditionConciseContentList(this.listQuery.contentTitle,
-          this.listQuery.blockId,this.listQuery.contentStatus,this.listQuery.auditStatus,
-          this.listQuery.page,this.listQuery.limit).then(response=>{
-          this.tables=response.data.conciseContentInfoDTOList;
-          this.total=response.data.total
-        })
+        this.listQuery.page = 1
+        this.fetchData()
       },
       onAdd(){
         this.$router.push({path:"/contentSysAdd"})
