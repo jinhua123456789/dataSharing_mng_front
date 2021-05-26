@@ -50,45 +50,45 @@
         style="width: 100%">
         <el-table-column label="内容标题" align="center">
           <template slot-scope="{row}">
-            <span>{{ row.contentTitle }}</span>
+            <span>{{ row.title }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="内容状态" align="center" width="80">
+        <el-table-column label="内容状态" align="center" width="150">
           <template slot-scope="{row}">
-            <el-tag v-if="row.contentStatus=='上线'"
+            <el-tag style="width: 80px; height:30px; text-align: center" v-if="row.statusApply=='up'"
                     type="success">
-              {{ row.contentStatus }}
+              上线
             </el-tag>
-            <el-tag v-if="row.contentStatus=='下线'"
+            <el-tag style="width: 80px; height:30px; text-align: center" v-if="row.statusApply=='down'"
                     type="danger">
-              {{ row.contentStatus }}
+              下线
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="审核状态" align="center" width="110">
+        <el-table-column label="审核状态" align="center" width="150">
           <template slot-scope="{row}">
-            <el-tag v-if="row.auditStatus=='待审核'"
+            <el-tag style="width: 80px; height:30px; text-align: center" v-if="row.statusCheck=='undo'"
                     type="primary">
-              {{ row.auditStatus }}
+              待审核
             </el-tag>
-            <el-tag v-if="row.auditStatus=='审核通过'"
+            <el-tag style="width: 80px; height:30px; text-align: center" v-if="row.statusCheck=='yes'"
                     type="success">
-              {{ row.auditStatus }}
+              审核通过
             </el-tag>
-            <el-tag v-if="row.auditStatus=='审核不通过'"
+            <el-tag style="width: 80px; height:30px; text-align: center" v-if="row.statusCheck=='no'"
                     type="danger">
-              {{ row.auditStatus }}
+              审核不通过
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="申请人" align="center" width="70">
+        <el-table-column label="申请人" align="center" width="150">
           <template slot-scope="{row}">
-            <span>{{ row.createName }}</span>
+            <span>{{ row.name }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="申请时间" align="center" width="100">
+        <el-table-column label="申请时间" align="center" width="150">
           <template slot-scope="{row}">
-            <span>{{ row.createTime }}</span>
+            <span>{{ row.timeApply }}</span>
           </template>
         </el-table-column>
 <!--        <el-table-column label="审核人" align="center" width="70">-->
@@ -96,30 +96,30 @@
 <!--            <span>{{ row.auditName }}</span>-->
 <!--          </template>-->
 <!--        </el-table-column>-->
-        <el-table-column label="审核时间" align="center" width="100">
+        <el-table-column label="审核时间" align="center" width="150">
           <template slot-scope="{row}">
-            <span>{{ row.auditTime }}</span>
+            <span>{{ row.timeCheck }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="审核意见" align="center" width="200">
-          <template slot-scope="{row}">
-            <span>{{ row.auditAdvise }}</span>
-          </template>
-        </el-table-column>
+<!--        <el-table-column label="审核意见" align="center" width="200">-->
+<!--          <template slot-scope="{row}">-->
+<!--            <span>{{ row.auditAdvise }}</span>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
         <el-table-column label="操作 " prop="operation"  align="center" width="360">
           <template slot-scope="{row}">
-            <el-button size="small" type="primary" @click="getInFetchList(row.id)">预览</el-button>
+            <el-button size="small" type="primary" @click="getInFetchList(row.aid)">预览</el-button>
 
-            <el-button size="small" type="primary" @click="auditYesList(row.id)">审核通过</el-button>
-            <el-button size="small" type="danger" @click="auditNoList(row.id)">审核不通过</el-button>
-            <el-button v-if="row.contentStatus=='上线'"
+            <el-button size="small" type="primary" @click="auditYesList(row.aid)">审核通过</el-button>
+            <el-button size="small" type="danger" @click="auditNoList(row.aid)">审核不通过</el-button>
+            <el-button v-if="row.statusApply=='上线'"
                        size="small"
                        type="danger"
-                       @click="offLineInModifyList(row.id)">下线</el-button>
-            <el-button v-if="row.contentStatus=='下线'"
+                       @click="offLineInModifyList(row.aid)">下线</el-button>
+            <el-button v-if="row.statusApply=='下线'"
                        size="small"
                        type="success"
-                       @click="onLineInModifyList(row.id)">上线</el-button>
+                       @click="onLineInModifyList(row.aid)">上线</el-button>
 
           </template>
         </el-table-column>
@@ -182,6 +182,7 @@ export default {
       blockList:[],
       tables: [],
       total:0,
+      email:'',
       listQuery:{
         contentTitle:undefined,
         contentStatus:undefined,
@@ -205,75 +206,98 @@ export default {
     this.fetchData()
   },
   methods: {
-    // fetchData(){
-    //   this.listloading=true
-    //
-    //   fetchConciseBlockList().then(response => {
-    //     this.blockList = response.data
-    //   })
-    //   fetchMoreConditionConciseAuditList(this.listQuery.contentTitle,
-    //     this.listQuery.blockId,this.listQuery.contentStatus,this.listQuery.auditStatus, this.listQuery.page,this.listQuery.limit).then(response=>{
-    //     this.tables=response.data.conciseAuditInfoDTOList
-    //     this.total=response.data.total
-    //     this.listloading=false
-    //   })
-    // },
-    // getInFetchList(id){
-    //   this.$router.push({path:"/auditSysWholeInfo",
-    //     query:{id:id}})
-    // },
-    // auditYesList(id){
-    //   this.auditTitle="审核通过"
-    //   this.dialogAuditVisible=true
-    //   this.id=id
-    //   this.$refs['auditForm'].resetFields()
-    // },
-    // auditNoList(id){
-    //   this.auditTitle="审核不通过"
-    //   this.dialogAuditVisible=true
-    //   this.id=id
-    //   this.$refs['auditForm'].resetFields()
-    // },
-    // auditList(){
-    //   this.dialogAuditVisible=false
-    //   modifyAuditListByAuditId(this.id,this.auditTitle,
-    //     this.auditForm.auditAdvise).then(()=>{
-    //     this.fetchData()
-    //     this.$notify({
-    //       title: '审核',
-    //       message: '审核成功',
-    //       type: 'success',
-    //       duration: 2000
-    //     })
-    //   })
-    // },
-    // onLineInModifyList(id){
-    //   onOffLineContentByContentId(id).then(()=>{
-    //     this.fetchData()
-    //     this.$notify({
-    //       title: '上线',
-    //       message: '上线成功',
-    //       type: 'success',
-    //       duration: 2000
-    //     })
-    //   })
-    // },
-    // offLineInModifyList(id){
-    //   this.deleteVisible=true
-    //   this.id=id
-    // },
-    // submitDelete() {
-    //   this.deleteVisible=false
-    //   onOffLineContentByContentId(this.id).then(()=>{
-    //     this.fetchData()
-    //     this.$notify({
-    //       title: '下线',
-    //       message: '下线成功',
-    //       type: 'success',
-    //       duration: 2000
-    //     })
-    //   })
-    // },
+    fetchData(){
+      // this.listloading=true
+      //
+      // fetchConciseBlockList().then(response => {
+      //   this.blockList = response.data
+      // })
+      // fetchMoreConditionConciseAuditList(this.listQuery.contentTitle,
+      //   this.listQuery.blockId,this.listQuery.contentStatus,this.listQuery.auditStatus, this.listQuery.page,this.listQuery.limit).then(response=>{
+      //   this.tables=response.data.conciseAuditInfoDTOList
+      //   this.total=response.data.total
+      //   this.listloading=false
+      // })
+      var that = this;
+      this.tables = [];
+      this.$axios({
+        method: 'post',
+        url: '/dataShare/application/showApply',
+        contentType: 'application/json; charset=UTF-8', // 解决415错误
+        headers: {'Content-Type': 'application/json;charset=UTF-8'},
+        dataType: 'json',
+        data: JSON.stringify({page: this.listQuery.page, limit: this.listQuery.limit})
+      }).then(res => { // 注意：后端需要返回userID
+        var string1 = res.data //储存数据
+        var dataNum = string1.length //储存数据条数
+        for(var i=0;i<dataNum;i++){
+          var objectToInsert = JSON.parse(string1[i]);
+          that.tables.push(objectToInsert);
+        }
+        that.total = parseInt(that.tables.pop())
+        console.log(that.tables)
+        console.log(res.data)
+      }).catch(error => {
+        alert(error)
+        console.log(error)
+      })
+    },
+    getInFetchList(id){
+      this.$router.push({path:"/auditSysWholeInfo",
+        query:{id:id}})
+    },
+    auditYesList(id){
+      this.auditTitle="审核通过"
+      this.dialogAuditVisible=true
+      this.id=id
+      this.$refs['auditForm'].resetFields()
+    },
+    auditNoList(id){
+      this.auditTitle="审核不通过"
+      this.dialogAuditVisible=true
+      this.id=id
+      this.$refs['auditForm'].resetFields()
+    },
+    auditList(){
+      this.dialogAuditVisible=false
+      modifyAuditListByAuditId(this.id,this.auditTitle,
+        this.auditForm.auditAdvise).then(()=>{
+        this.fetchData()
+        this.$notify({
+          title: '审核',
+          message: '审核成功',
+          type: 'success',
+          duration: 2000
+        })
+      })
+    },
+    onLineInModifyList(id){
+      onOffLineContentByContentId(id).then(()=>{
+        this.fetchData()
+        this.$notify({
+          title: '上线',
+          message: '上线成功',
+          type: 'success',
+          duration: 2000
+        })
+      })
+    },
+    offLineInModifyList(id){
+      this.deleteVisible=true
+      this.id=id
+    },
+    submitDelete() {
+      this.deleteVisible=false
+      onOffLineContentByContentId(this.id).then(()=>{
+        this.fetchData()
+        this.$notify({
+          title: '下线',
+          message: '下线成功',
+          type: 'success',
+          duration: 2000
+        })
+      })
+    },
     onSearch() {
       fetchMoreConditionConciseAuditList(this.listQuery.contentTitle,
         this.listQuery.contentStatus,this.listQuery.auditStatus, this.listQuery.page,this.listQuery.limit).then(response=>{
@@ -281,7 +305,7 @@ export default {
         this.total=response.data.total
       })
     }
-  }
+  },
 }
 </script>
 
