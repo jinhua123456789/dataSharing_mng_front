@@ -22,19 +22,19 @@
 <!--        </el-form-item>-->
         <el-form-item >
           <el-select v-model="listQuery.contentStatus" clearable placeholder="内容状态">
-            <el-option label="申请上线" value="申请上线"></el-option>
-            <el-option label="申请下线" value="申请下线"></el-option>
+            <el-option label="申请上线" value="up"></el-option>
+            <el-option label="申请下线" value="down"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item >
           <el-select v-model="listQuery.auditStatus" clearable placeholder="审核状态">
-            <el-option label="待审核" value="待审核"></el-option>
-            <el-option label="审核通过" value="审核通过"></el-option>
-            <el-option label="审核不通过" value="审核不通过"></el-option>
+            <el-option label="待审核" value="undo"></el-option>
+            <el-option label="审核通过" value="yes"></el-option>
+            <el-option label="审核不通过" value="no"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" @click="onSearch">查询</el-button>
+          <el-button type="primary" icon="el-icon-search" @click="clickSearch">查询</el-button>
         </el-form-item>
       </el-form>
 
@@ -101,11 +101,11 @@
             <span>{{ row.timeCheck }}</span>
           </template>
         </el-table-column>
-<!--        <el-table-column label="审核意见" align="center" width="200">-->
-<!--          <template slot-scope="{row}">-->
-<!--            <span>{{ row.auditAdvise }}</span>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
+        <el-table-column label="审核意见" align="center" width="200">
+          <template slot-scope="{row}">
+            <span>{{ row.checkReason }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作 " prop="operation"  align="center" width="360">
           <template slot-scope="{row}">
             <el-button size="small" type="primary" @click="getInFetchList(row.aid)">预览</el-button>
@@ -184,9 +184,9 @@ export default {
       total:0,
       email:'',
       listQuery:{
-        contentTitle:undefined,
-        contentStatus:undefined,
-        auditStatus:undefined,
+        contentTitle:'',
+        contentStatus:'',
+        auditStatus:'',
         page:1,
         limit:10
       },
@@ -226,7 +226,13 @@ export default {
         contentType: 'application/json; charset=UTF-8', // 解决415错误
         headers: {'Content-Type': 'application/json;charset=UTF-8'},
         dataType: 'json',
-        data: JSON.stringify({page: this.listQuery.page, limit: this.listQuery.limit})
+        data: JSON.stringify({
+          page: this.listQuery.page,
+          limit: this.listQuery.limit,
+          contentTitle: this.listQuery.contentTitle,
+          contentStatus: this.listQuery.contentStatus,
+          auditStatus: this.listQuery.auditStatus
+        })
       }).then(res => { // 注意：后端需要返回userID
         var string1 = res.data //储存数据
         var dataNum = string1.length //储存数据条数
@@ -241,6 +247,10 @@ export default {
         alert(error)
         console.log(error)
       })
+    },
+    clickSearch() {
+      this.listQuery.page = 1
+      this.fetchData()
     },
     getInFetchList(id){
       this.$router.push({path:"/auditSysWholeInfo",
@@ -298,13 +308,13 @@ export default {
         })
       })
     },
-    onSearch() {
+/*    onSearch() {
       fetchMoreConditionConciseAuditList(this.listQuery.contentTitle,
         this.listQuery.contentStatus,this.listQuery.auditStatus, this.listQuery.page,this.listQuery.limit).then(response=>{
         this.tables=response.data.conciseAuditInfoDTOList
         this.total=response.data.total
       })
-    }
+    }*/
   },
 }
 </script>
