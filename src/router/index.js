@@ -197,6 +197,15 @@ export const constantRoutes = [
     }
   },
   {
+    path: '/dataPreview',
+    component: () => import('@/views/dataShare/dataPreview'),
+    hidden: true,
+    name: 'dataPreview',
+    meta: {
+      title: '数据预览'
+    }
+  },
+  {
     path: '/auditSysWholeInfo',
     component: () => import('@/views/portal/audit/auditWholeInfo'),
     hidden: true,
