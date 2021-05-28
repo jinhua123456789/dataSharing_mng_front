@@ -215,9 +215,7 @@ export const constantRoutes = [
     }
   },
 
-  onlineRouter/*,
-  checkAndAcceptRouter*/
-  // ,gridEditRouter
+  onlineRouter
 ]
 
 /**

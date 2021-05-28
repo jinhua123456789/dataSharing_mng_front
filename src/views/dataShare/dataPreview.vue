@@ -157,8 +157,6 @@
           that.ArticleAuthor = res.data[1]
           that.ArticleFrom = res.data[2]
           that.ArticleTime = res.data[3]
-/*          that.ArticleViewTimes = res.data[4]
-          that.ArticleDownloadTimes = res.data[5]*/
           that.keyWord = res.data[4]
           that.fileName = res.data[5]
           that.fileSize = res.data[6]
