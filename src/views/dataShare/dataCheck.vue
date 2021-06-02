@@ -23,8 +23,8 @@
         <!--        </el-form-item>-->
         <el-form-item>
           <el-select v-model="listQuery.contentStatus" clearable placeholder="内容状态">
-            <el-option label="申请上线" value="up"></el-option>
-            <el-option label="申请下线" value="down"></el-option>
+            <el-option label="上线" value="up"></el-option>
+            <el-option label="下线" value="down"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -32,6 +32,7 @@
             <el-option label="待审核" value="undo"></el-option>
             <el-option label="审核通过" value="yes"></el-option>
             <el-option label="审核不通过" value="no"></el-option>
+            <el-option label="强制下线" value="admin"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>

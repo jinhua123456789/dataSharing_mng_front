@@ -9,8 +9,8 @@
         <div class="content_details">
           <p>上传时间：{{ArticleTime}}</p>
           <p>上传机构：{{ArticleFrom}}</p>
-<!--          <p>浏览量：{{ArticleViewTimes}}</p>
-          <p>下载量：{{ArticleDownloadTimes}}</p>-->
+          <!--          <p>浏览量：{{ArticleViewTimes}}</p>
+                    <p>下载量：{{ArticleDownloadTimes}}</p>-->
         </div>
       </div>
       <div class="content_details2">
@@ -34,7 +34,7 @@
           <p class="littleTitle" style="white-space:pre;">数据状态</p>
           <br>
           <div style="width: 100%;text-align: left;text-indent: 2em;line-height:32px;">
-            {{dataStatus}}  ;  {{statusCheck}}
+            {{dataStatus}} ; {{statusCheck}}
           </div>
         </div>
         <br>
@@ -53,7 +53,8 @@
           <br>
           <div style="display: flex;width: 100%">
             <p style="white-space:pre;text-indent: 2em;width: auto;">{{fileName}} ({{fileSize}}) </p>
-            <el-button type="text" @click="dialogFormVisible = true">下载</el-button>
+            <!--<el-button type="text" @click="dialogFormVisible = true">下载</el-button>-->
+            <el-button type="text" @click="clickSubmit()">下载</el-button>
             <br>
           </div>
           <br>
@@ -163,19 +164,16 @@
           that.abstract = res.data[7]
           that.size = parseInt(res.data[8])
           that.reason = res.data[9]
-          if(that.$route.query.status === 'up'){
+          if (that.$route.query.status === 'up') {
             that.dataStatus = '上线'
-          }
-          else
+          } else
             that.dataStatus = '下线'
 
-          if(that.$route.query.statusCheck === 'undo'){
+          if (that.$route.query.statusCheck === 'undo') {
             that.statusCheck = '待审核'
-          }
-          else if(that.$route.query.statusCheck === 'yes'){
+          } else if (that.$route.query.statusCheck === 'yes') {
             that.statusCheck = '审核通过'
-          }
-          else if(that.$route.query.statusCheck === 'no'){
+          } else if (that.$route.query.statusCheck === 'no') {
             that.statusCheck = '审核不通过'
           }
 
@@ -184,66 +182,62 @@
           console.log(error)
         })
       },
-      clickSubmit(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            var that = this;
-            var submit = { // JSON数据    名称-值对
-              'rid': this.$route.query.id,
-              'email': '',
-              'type': 'admin',
-            }
-            this.$axios({
-              method: 'post',
-              url: '/dataShare/download/downloadFile',
-              contentType: 'application/json; charset=UTF-8', // 解决415错误
-              headers: {'Content-Type': 'application/json;charset=UTF-8;application/octet-stream'},
-              dataType: 'json',
-              data: JSON.stringify(submit),
-              responseType: 'arraybuffer',
-              onDownloadProgress(progress) {
-                that.percentageNum = (progress.loaded / that.size) * 100
-              }
-            }).then((res) => {
-              if (!res) {
-                this.$message.error("下载模板文件失败");
-                return false;
-              }
-              console.log(res)
-              //const blob = new Blob([res.data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'});
-              const blob = new Blob([res.data])
-              const downloadElement = document.createElement('a');
-              const href = window.URL.createObjectURL(blob);
-
-              let contentDisposition = res.headers['content-disposition'];  //从response的headers中获取filename, 后端response.setHeader("Content-disposition", "attachment; filename=xxxx.docx") 设置的文件名;
-              let patt = new RegExp("filename=([^;]+\\.[^\\.;]+);*");
-              let result = patt.exec(contentDisposition);
-              let filename = decodeURI(result[1]);
-              downloadElement.style.display = 'none';
-              downloadElement.href = href;
-              //window.open(href)
-              downloadElement.download = filename; //下载后文件名
-              document.body.appendChild(downloadElement);
-              downloadElement.click(); //点击下载
-              document.body.removeChild(downloadElement); //下载完成移除元素
-              window.URL.revokeObjectURL(href); //释放掉blob对象
-              if (that.percentageNum === 100) {
-                this.$message({
-                  message: '文件' + filename + '下载完成！',
-                  type: 'success'
-                });
-                that.percentageNum = 0
-              } else {
-                this.$message.error('文件下载失败！');
-                that.percentageNum = 0
-              }
-            }).catch(error => {
-              alert(error)
-              console.log(error)
-            })
-            this.dialogFormVisible = false
+      clickSubmit() {
+        var that = this;
+        var submit = { // JSON数据    名称-值对
+          'rid': this.$route.query.id,
+          'email': '',
+          'type': 'admin',
+        }
+        this.$axios({
+          method: 'post',
+          url: '/dataShare/download/downloadFile',
+          contentType: 'application/json; charset=UTF-8', // 解决415错误
+          headers: {'Content-Type': 'application/json;charset=UTF-8;application/octet-stream'},
+          dataType: 'json',
+          data: JSON.stringify(submit),
+          responseType: 'arraybuffer',
+          onDownloadProgress(progress) {
+            that.percentageNum = (progress.loaded / that.size) * 100
           }
+        }).then((res) => {
+          if (!res) {
+            this.$message.error("下载模板文件失败");
+            return false;
+          }
+          console.log(res)
+          //const blob = new Blob([res.data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'});
+          const blob = new Blob([res.data])
+          const downloadElement = document.createElement('a');
+          const href = window.URL.createObjectURL(blob);
+
+          let contentDisposition = res.headers['content-disposition'];  //从response的headers中获取filename, 后端response.setHeader("Content-disposition", "attachment; filename=xxxx.docx") 设置的文件名;
+          let patt = new RegExp("filename=([^;]+\\.[^\\.;]+);*");
+          let result = patt.exec(contentDisposition);
+          let filename = decodeURI(result[1]);
+          downloadElement.style.display = 'none';
+          downloadElement.href = href;
+          //window.open(href)
+          downloadElement.download = filename; //下载后文件名
+          document.body.appendChild(downloadElement);
+          downloadElement.click(); //点击下载
+          document.body.removeChild(downloadElement); //下载完成移除元素
+          window.URL.revokeObjectURL(href); //释放掉blob对象
+          if (that.percentageNum === 100) {
+            this.$message({
+              message: '文件' + filename + '下载完成！',
+              type: 'success'
+            });
+            that.percentageNum = 0
+          } else {
+            this.$message.error('文件下载失败！');
+            that.percentageNum = 0
+          }
+        }).catch(error => {
+          alert(error)
+          console.log(error)
         })
+        this.dialogFormVisible = false
       }
     },
 
