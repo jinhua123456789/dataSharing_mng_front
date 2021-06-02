@@ -81,6 +81,10 @@
                     type="danger">
               审核不通过
             </el-tag>
+            <el-tag style="width: 80px; height:30px; text-align: center" v-if="row.statusCheck=='admin'"
+                    type="danger">
+              强制下线
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="申请人" align="center" width="150">
@@ -307,9 +311,20 @@ export default {
             }).then(res => { // 注意：后端需要返回userID
               this.$refs['auditForm'].resetFields()
               if (res.data === -1) {
-                this.$message.error('审核失败')
+                //this.$message.error('审核失败')
+                this.$notify({
+                      title: '审核',
+                      message: '审核失败',
+                      type: 'error',
+                      duration: 2000
+                    })
               } else {
-                this.$message.success('审核成功')
+                this.$notify({
+                  title: '审核',
+                  message: '审核成功',
+                  type: 'success',
+                  duration: 2000
+                })
               }
             }).catch(error => {
               this.$refs['auditForm'].resetFields()
@@ -331,9 +346,19 @@ export default {
             }).then(res => { // 注意：后端需要返回userID
               this.$refs['auditForm'].resetFields()
               if (res.data === -1) {
-                this.$message.error('审核失败')
+                this.$notify({
+                  title: '审核',
+                  message: '审核失败',
+                  type: 'error',
+                  duration: 2000
+                })
               } else {
-                this.$message.success('审核成功')
+                this.$notify({
+                  title: '审核',
+                  message: '审核成功',
+                  type: 'success',
+                  duration: 2000
+                })
               }
             }).catch(error => {
               alert(error)
@@ -359,15 +384,46 @@ export default {
       this.id = id
     },
     submitDelete() {
-      this.deleteVisible = false
-      onOffLineContentByContentId(this.id).then(() => {
-        this.fetchData()
-        this.$notify({
-          title: '下线',
-          message: '下线成功',
-          type: 'success',
-          duration: 2000
+      //this.deleteVisible = false
+      // onOffLineContentByContentId(this.id).then(() => {
+      //   this.fetchData()
+      //   this.$notify({
+      //     title: '下线',
+      //     message: '下线成功',
+      //     type: 'success',
+      //     duration: 2000
+      //   })
+      // })
+      this.$axios({
+        method: 'post',
+        url: '/dataShare//resource/downApplyAdmin',
+        contentType: 'application/json; charset=UTF-8', // 解决415错误
+        headers: {'Content-Type': 'application/json;charset=UTF-8'},
+        dataType: 'json',
+        data: JSON.stringify({
+          aid: this.id,
         })
+      }).then(res => { // 注意：后端需要返回userID
+        if (res.data === -1) {
+          this.$notify({
+            title: '下线',
+            message: '下线失败',
+            type: 'error',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: '下线',
+            message: '下线成功',
+            type: 'success',
+            duration: 2000
+          })
+        }
+        this.deleteVisible = false
+      }).catch(error => {
+        alert(error)
+        console.log(error)
+        this.deleteVisible = false
       })
     },
     /*    onSearch() {
