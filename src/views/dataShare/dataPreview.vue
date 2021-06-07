@@ -175,6 +175,8 @@
             that.statusCheck = '审核通过'
           } else if (that.$route.query.statusCheck === 'no') {
             that.statusCheck = '审核不通过'
+          } else if (that.$route.query.statusCheck === 'admin') {
+            that.statusCheck = '强制下线'
           }
 
         }).catch(error => {

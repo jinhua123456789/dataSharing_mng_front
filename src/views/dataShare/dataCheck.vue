@@ -87,12 +87,12 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="申请人" align="center" width="150">
+        <el-table-column label="创建人" align="center" width="150">
           <template slot-scope="{row}">
             <span>{{ row.name }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="申请时间" align="center" width="150">
+        <el-table-column label="申请时间" align="center" width="160">
           <template slot-scope="{row}">
             <span>{{ row.timeApply }}</span>
           </template>
@@ -102,7 +102,7 @@
         <!--            <span>{{ row.auditName }}</span>-->
         <!--          </template>-->
         <!--        </el-table-column>-->
-        <el-table-column label="审核时间" align="center" width="150">
+        <el-table-column label="审核时间" align="center" width="160">
           <template slot-scope="{row}">
             <span>{{ row.timeCheck }}</span>
           </template>
@@ -114,7 +114,8 @@
         </el-table-column>
         <el-table-column label="操作 " prop="operation" align="center" width="400">
           <template slot-scope="{row}">
-            <el-button size="small" type="primary" @click="getInFetchList(row.aid, row.statusApply, row.statusCheck)">预览</el-button>
+            <el-button size="small" type="primary" @click="getInFetchList(row.aid, row.statusApply, row.statusCheck)"
+                       :disabled="((row.statusCheck == 'undo' && row.statusApply == 'up') || (row.statusCheck == 'yes' && row.statusApply == 'up') || (row.statusCheck == 'no' && row.statusApply == 'down') ) ? false : true">预览</el-button>
 
             <el-button size="small" type="primary" @click="auditYesList(row.aid, row.statusApply)"
                        :disabled="(row.statusCheck == 'undo') ? false : true">审核通过
