@@ -1,40 +1,41 @@
 <template>
-  <el-row>
-    <el-col :span="8">
-      <el-table
-        :data="ptableData"
-        tooltip-effect="dark"
-        stripe
-        style="width: 100%; margin-top: 30px"
-        border
-      >
-        <el-table-column
-          :label="ptableName"
-          prop="columnName"
-          :key="index"
-          align="center"
-        >
-        </el-table-column>
-        <el-table-column label="权限" align="center">
-          <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.available"
-              active-text="开放权限"
-              inactive-text="关闭权限"
-              :active-value="1"
-              :inactive-value="0"
-              @change="changeStatus($event, scope.$index, ptableName)"
-            >
-            </el-switch>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div align="center">
-        <el-button @click="allSelect">全部开放权限</el-button>
-        <el-button @click="noneSelect">全部取消权限</el-button>
-      </div>
-    </el-col>
-  </el-row>
+  <div class="app-container">
+    <el-row>
+      <el-col :span="15">
+        <el-table
+          :data="ptableData"
+          tooltip-effect="dark"
+          stripe
+          style="width: 100%; margin-top: 30px"
+          border>
+          <el-table-column
+            :label="ptableName"
+            prop="columnName"
+            :key="index"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column label="权限" align="center">
+            <template slot-scope="scope">
+              <el-switch
+                v-model="scope.row.available"
+                active-text="开放权限"
+                inactive-text="关闭权限"
+                :active-value="1"
+                :inactive-value="0"
+                @change="changeStatus($event, scope.$index, ptableName)"
+              >
+              </el-switch>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div align="center" class="btn-style">
+          <el-button @click="allSelect">全部开放权限</el-button>
+          <el-button @click="noneSelect">全部取消权限</el-button>
+        </div>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
 <script>
@@ -42,11 +43,10 @@ export default {
   data() {
     return {
       tdata: {},
-
       selectdata: [],
     };
   },
-  props: ["ptableData", "ptableName"],
+  props: ["ptableData", "ptableName", 'index'],
 
   methods: {
     // handleSelectionChange(selection) {
@@ -76,3 +76,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.btn-style {
+  margin-top: 7px;
+}
+</style>

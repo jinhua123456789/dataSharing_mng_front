@@ -140,4 +140,8 @@ export const componentsMap = {
   inputRecord:() => import('@/views/inputAndCheck/inputRecord'),
   checkRecord:() => import('@/views/inputAndCheck/checkRecord'),
   recordTemplate: () => import('@/views/inputAndCheck/recordTemplate'),
+  dataPermission: () => import('@/views/dataShare/dataPermission'),
+  historydataShow: () => import('@/views/dataShare/historydataShow'),
+  userManage: () => import('@/views/dataShare/userManage'),
+  dataCheck: () => import('@/views/dataShare/dataCheck')
 }

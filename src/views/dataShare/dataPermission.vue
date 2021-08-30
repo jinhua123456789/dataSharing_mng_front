@@ -1,24 +1,19 @@
 <template>
   <el-container>
-    <el-header>
+    <el-header style="border-bottom: 1px solid rgb(220, 223, 230);margin:20px 20px 0 20px;height: 40px">
       <el-row type="flex">
-        <el-col :span="4"
-          ><el-button type="text" size="medium"
-            >设置用户定制数据在服务器端保存月数</el-button
-          ></el-col
-        >
-        <el-col :span="4">
+        <el-col :span="6">
+          <el-button type="text" size="medium">设置用户定制数据在服务器端保存月数</el-button>
+        </el-col>
+        <el-col :span="6">
           <el-radio-group v-model="month" size="small">
             <el-radio :label="3" @change="getLabel($event)" border>3</el-radio>
             <el-radio :label="6" @change="getLabel($event)" border>6</el-radio>
             <el-radio :label="9" @change="getLabel($event)" border>9</el-radio>
           </el-radio-group>
         </el-col>
-
-        <el-col :span="18">
-          <el-button type="primary" @click="modifyMonth" size="small"
-            >修改保存月份</el-button
-          >
+        <el-col :span="10">
+          <el-button type="primary" @click="modifyMonth" size="small">修改保存月份</el-button>
         </el-col>
       </el-row>
     </el-header>
@@ -35,17 +30,14 @@
 
     <el-footer>
       <el-row type="flex" justify="center" align="center">
-        <el-col :span="18">
           <el-button type="primary" @click="open">修改数据权限</el-button>
-          <el-button type="primary" @click="print">打印</el-button>
-        </el-col>
       </el-row>
     </el-footer>
   </el-container>
 </template>
 
 <script>
-import dynamictab from "@/components/dynamicTable";
+import dynamictab from "./dynamicTable";
 import axios from "axios";
 
 export default {
@@ -160,4 +152,8 @@ export default {
   },
 };
 </script>
-
+<style scoped>
+  .el-main {
+    padding: 0 20px;
+  }
+</style>

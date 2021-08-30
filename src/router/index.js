@@ -179,33 +179,6 @@ export const constantRoutes = [
     }
   },
   {
-    path: '/userManage',
-    component: () => import('@/views/dataShare/userManage'),
-    hidden: true,
-    name: 'userManage',
-    meta: {
-      title: '外部用户管理'
-    }
-  },
-  {
-    path: '/dataCheck',
-    component: () => import('@/views/dataShare/dataCheck'),
-    hidden: true,
-    name: 'dataCheck',
-    meta: {
-      title: '数据申请任务管理'
-    }
-  },
-  {
-    path: '/dataPreview',
-    component: () => import('@/views/dataShare/dataPreview'),
-    hidden: true,
-    name: 'dataPreview',
-    meta: {
-      title: '数据预览'
-    }
-  },
-  {
     path: '/auditSysWholeInfo',
     component: () => import('@/views/portal/audit/auditWholeInfo'),
     hidden: true,
@@ -214,8 +187,19 @@ export const constantRoutes = [
       title: '内容详情'
     }
   },
+{
+    path: '/dataPreview',
+      component: () => import('@/views/dataShare/dataPreview'),
+    hidden: true,
+    name: 'dataPreview',
+    meta: {
+    title: '数据预览'
+  }
+},
 
-  onlineRouter
+  onlineRouter/*,
+  checkAndAcceptRouter*/
+  // ,gridEditRouter
 ]
 
 /**

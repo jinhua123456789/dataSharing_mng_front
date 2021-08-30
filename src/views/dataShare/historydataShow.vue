@@ -1,38 +1,35 @@
 <template>
   <el-container>
-    <el-main >
+    <el-main style="display:grid;justify-content: center;align-items: center">
         <el-table
           :data="showTable"
           stripe
-          style="width: 30%; margin-top: 30px"
-          border
-        >
+          style="margin-top: 30px;"
+          border>
           <el-table-column
             prop="userId"
             label="用户id"
             align="center"
-            width="180"
+            width="180px"
           >
           </el-table-column>
           <el-table-column
             prop="createTime"
             label="下载时间"
             align="center"
-            width="212"
+            width="230px"
           >
           </el-table-column>
           <el-table-column
             prop="sourceTable"
             label="下载表格"
             align="center"
-            width="210"
+            width="210px"
           >
           </el-table-column>
         </el-table>
     </el-main>
-
     <el-footer>
-
         <el-pagination
           @current-change="handleCurrentChange"
           layout="total, prev, pager, next"
@@ -93,3 +90,11 @@ export default {
   },
 };
 </script>
+<style scoped>
+  .el-main {
+    display: block;
+    flex-basis: auto;
+    overflow: hidden;
+    padding: 0 20px;
+  }
+</style>
