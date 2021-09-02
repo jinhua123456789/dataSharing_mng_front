@@ -6,7 +6,8 @@ import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
 import Element from 'element-ui'
 import './styles/element-variables.scss'
-
+import 'element-ui/lib/theme-chalk/index.css'//element-ui的css
+import ElementUI from 'element-ui'
 import '@/styles/index.scss' // global css
 
 import App from './App'
@@ -43,7 +44,7 @@ Vue.use(formCreate)
 // if (process.env.NODE_ENV === 'production') { mockXHR() }
 
 Vue.use(VCharts)
-
+Vue.use(ElementUI)
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium', // set element-ui default size
   i18n: (key, value) => i18n.t(key, value)

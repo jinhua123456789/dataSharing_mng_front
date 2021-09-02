@@ -1,159 +1,154 @@
 <template>
-  <el-container>
-    <el-header style="border-bottom: 1px solid rgb(220, 223, 230);margin:20px 20px 0 20px;height: 40px">
-      <el-row type="flex">
-        <el-col :span="6">
-          <el-button type="text" size="medium">设置用户定制数据在服务器端保存月数</el-button>
-        </el-col>
-        <el-col :span="6">
-          <el-radio-group v-model="month" size="small">
-            <el-radio :label="3" @change="getLabel($event)" border>3</el-radio>
-            <el-radio :label="6" @change="getLabel($event)" border>6</el-radio>
-            <el-radio :label="9" @change="getLabel($event)" border>9</el-radio>
-          </el-radio-group>
-        </el-col>
-        <el-col :span="10">
-          <el-button type="primary" @click="modifyMonth" size="small">修改保存月份</el-button>
-        </el-col>
-      </el-row>
-    </el-header>
-    <el-main>
-      <dynamictab
-        v-for="(item, index) in tableData"
-        :ptableData="item.columns"
-        :ptableName="item.tableName"
-        :key="index"
-        @modifydata="commitData"
-      >
-      </dynamictab>
-    </el-main>
-
-    <el-footer>
-      <el-row type="flex" justify="center" align="center">
-          <el-button type="primary" @click="open">修改数据权限</el-button>
-      </el-row>
-    </el-footer>
-  </el-container>
+  <div class="container">
+    <el-tabs>
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="数据关系" name="first">
+          <div class="demo-class">
+            <el-image
+              style="height: 100%; margin: 0 auto;"
+              :src="url"
+            ></el-image>
+          </div>
+          <!-- <DataRelationship v-if="isDataRelationship"></DataRelationship> -->
+        </el-tab-pane>
+        <el-tab-pane label="视图定制" name="second">
+          <!-- <CreateView v-if="isCreateView"></CreateView> -->
+          2
+        </el-tab-pane>
+        <el-tab-pane label="视图列表" name="third ">
+          <!-- <ViewList v-if="isViewList"></ViewList> -->
+          <el-table
+            :data="viewTable"
+            class="list_wrap"
+            border
+            style="width: 100%; margin-left: 0px; margin-top: 1%;"
+            :row-style="{ height: '50px' }"
+            alt=""
+          >
+            <el-table-column
+              prop="viewName"
+              label="视图名称"
+              min-width="3"
+            ></el-table-column>
+            <el-table-column
+              prop="createTime"
+              label="创建日期"
+              min-width="3"
+            ></el-table-column>
+            <el-table-column prop="permission" label="权限" min-width="2">
+              <el-switch
+                v-model="switchValue"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+              ></el-switch>
+            </el-table-column>
+            <el-table-column label="操作" min-width="2">
+              <template slot-scope="scope">
+                <el-button
+                  @click="handleClickDetail(scope.row)"
+                  type="text"
+                  size="small"
+                >
+                  详情
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+      </el-tabs>
+    </el-tabs>
+    <!-- <div class="demo-class">
+      <el-image style="height: 100%; margin: 0 auto;" :src="url"></el-image>
+    </div> -->
+  </div>
 </template>
 
 <script>
-import dynamictab from "./dynamicTable";
-import axios from "axios";
-
+import { Loading } from 'element-ui'
 export default {
+  name: 'dataPermission',
   data() {
     return {
-      month: 3,
-      tmonth: 0,
-      tdata: {
-        tablename: "",
-        tindex: 0,
-        available: true,
-      },
-      tableData: [],
-    };
-  },
-  components: {
-    dynamictab,
+      // height: 1000,
+      switchValue: true,
+      viewTable: [
+        //需要确定 视图列表展示数据项，以及获得数据视图列表的数据格式
+        {
+          date: '2016-05-03',
+          viewName: 'exsl1',
+        },
+      ],
+
+      activeName: 'first',
+      isDataRelationship: true,
+      isCreateView: false,
+      isViewList: false,
+      url:
+        'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
+    }
   },
   created() {
-    this.getDataPermission();
-    this.getStorageTime();
+    // this.height = this.tableData.length * 50 + 50 + 'px'
   },
+  computed: {},
   methods: {
-    open() {
-      this.$confirm("此操作将修改开放给用户的数据权限, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          this.$message({
-            type: "success",
-            message: "修改成功!",
-          });
+    getPictureUrl() {
+      if (this.isDataRelationship) {
+        //获取图片url待完善，包括确定向后端传递参数，确定后端生成url的方式以及链接，服务器地址
+        this.$axios
+          .get('http://www.baidu.com', {
+            params: {
+              userId: this.userId,
+            },
+          })
+          .then((respond) => {
+            this.url = respond.url
+          })
+          .catch(function (err) {
+            console.log(err)
+          })
+      }
+    },
+    handleClickDetail(row) {
+      //用于查看视图详情
 
-          this.postDataPermission();
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消修改",
-          });
-        });
+      console.log('组成表以及关系')
     },
-    modifyMonth() {
-      this.$confirm("此操作将修改服务器保存用户数据的月数, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          this.$message({
-            type: "success",
-            message: "修改成功!",
-          });
-          console.log(this.tmonth);
-          this.postStorageTime();
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消修改",
-          });
-        });
-    },
-    getLabel(val) {
-      this.tmonth = val;
-    },
-    commitData(k) {
-      this.tdata = k;
-      // console.log(this.tdata);
-      // 忘记有v-model绑定了
-      // for (let i = 0; i < this.tableData.length; i++) {
-      //   if (this.tdata.tablename == this.tableData[i].tname) {
-      //     console.log(this.tdata.tablename);
-      //     this.tableData[i].tData[this.tdata.tindex].available = this.tdata.available;
-      console.log("after:", this.tableData);
-      //   }
-      // }
-    },
-
-    getDataPermission() {
-      axios.get("http://10.112.64.74:8765/getTables").then((res) => {
-        this.tableData = res.data;
-
-        console.log(this.tableData);
-      });
-    },
-    postDataPermission() {
-      axios
-        .post("http://10.112.64.74:8765/setTables", this.tableData)
-        .then((res) => {});
-    },
-    postStorageTime() {
-      axios
-        .get("http://10.112.64.74:8765/setDeadline", {
-          params: {
-            deadline: this.tmonth,
-          },
-          headers: {},
-        })
-        .then((res) => {});
-    },
-    getStorageTime() {
-      axios.get("http://10.112.64.74:8765/getDeadline").then((res) => {
-        this.month = res.data;
-      });
-    },
-    print() {
-      console.log(this.month);
+    handleClick(tab) {
+      console.log(tab)
+      if (tab.name === 'first') {
+        this.isDataRelationship = true
+        this.isCreateView = false
+        this.isViewList = false
+      } else if (tab.name === 'second') {
+        this.isDataRelationship = false
+        this.isCreateView = true
+        this.isViewList = false
+      } else if (tab.name === 'third') {
+        this.isDataRelationship = false
+        this.isCreateView = false
+        this.isViewList = true
+      }
     },
   },
-};
+}
 </script>
+
 <style scoped>
-  .el-main {
-    padding: 0 20px;
-  }
+.container {
+  padding: 20px;
+}
+
+li {
+  margin: 10px;
+  padding: 10px;
+}
+.download-text {
+  font-size: 12px;
+}
+
+.download-name {
+  font-size: 14px;
+  color: dodgerblue;
+}
 </style>
