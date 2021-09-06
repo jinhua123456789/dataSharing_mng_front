@@ -65,7 +65,7 @@ export default {
         {
           value: 'ziyuan11',
           label: '资源11',
-          disabled: false,
+
           children: [
             {
               value: 'axure11',
@@ -86,6 +86,7 @@ export default {
         {
           value: '表',
           label: '资源',
+          disabled: false,
           children: [
             {
               value: 'axure',
@@ -104,6 +105,7 @@ export default {
         {
           value: 'ziyuan11',
           label: '资源11',
+          disabled: false,
           children: [
             {
               value: 'axure11',
@@ -133,15 +135,12 @@ export default {
     },
 
     updatecascader(item) {
-      // console.log(this.$refs.myCascader.getCheckedNodes()[0].pathLabels)
-      let node = this.$refs['myCascader'].currentLabels
-      console.log(item, this.$refs['myCascader'][0])
-      // console.log(item, node) //大舒服了
-      // for (var i in this.secondoptions) {
-      //   if (i.label == node[0]) {
-      //     i.disabled = true
-      //   }
-      // }
+      console.log(item[0]) //打印表一的value值
+      // console.log('test', this.secondoptions[0])
+      this.secondoptions.forEach((item1) => {
+        if (item1.value === item[0]) item1.disabled = true
+        else item1.disabled = false
+      })
     },
   },
   created() {
