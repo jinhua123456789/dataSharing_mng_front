@@ -13,7 +13,24 @@
         </el-tab-pane>
         <el-tab-pane label="视图定制" name="second">
           <!-- <CreateView v-if="isCreateView"></CreateView> -->
-          2
+
+          <create-view
+            v-if="iscreateview"
+            :data="iscreateview"
+            :data2="iscreateview2"
+            @toSecondStep="toSecondStep"
+            :viewRule="viewRule"
+            @addtablename="addtablename"
+          ></create-view>
+
+          <create-view-2
+            ref="childcom"
+            v-if="iscreateview2"
+            :data="iscreateview"
+            :data2="iscreateview2"
+            @backToFirstStep="backToFirstStep"
+            :viewRule="viewRule"
+          ></create-view-2>
         </el-tab-pane>
         <el-tab-pane label="视图列表" name="third ">
           <!-- <ViewList v-if="isViewList"></ViewList> -->
@@ -64,11 +81,42 @@
 </template>
 
 <script>
-import { Loading } from 'element-ui'
+import createView from './createView'
+import createView2 from './createView2'
+
 export default {
   name: 'dataPermission',
+  components: {
+    createView,
+    createView2,
+  },
   data() {
     return {
+      childcomwidth: '',
+
+      viewRule: {
+        name: '',
+        tables: [],
+        colunms: [
+          {
+            table: 'table1',
+            column: ['column1'],
+            name: 'columnname',
+          },
+        ],
+        conditions: [
+          {
+            leftTable: 'string',
+            leftColumn: 'string',
+            rightTable: 'string',
+            rightColumn: 'string',
+          },
+        ],
+      },
+
+      iscreateview: true,
+      iscreateview2: false,
+
       // height: 1000,
       switchValue: true,
       viewTable: [
@@ -88,10 +136,23 @@ export default {
     }
   },
   created() {
+    this.childcomwidth = this.$refs.childcom
     // this.height = this.tableData.length * 50 + 50 + 'px'
   },
   computed: {},
   methods: {
+    addtablename(tablename) {
+      this.viewRule.name = tablename
+    },
+
+    backToFirstStep() {
+      this.iscreateview = true
+      this.iscreateview2 = false
+    },
+    toSecondStep(params) {
+      this.iscreateview = false
+      this.iscreateview2 = true
+    },
     getPictureUrl() {
       if (this.isDataRelationship) {
         //获取图片url待完善，包括确定向后端传递参数，确定后端生成url的方式以及链接，服务器地址
