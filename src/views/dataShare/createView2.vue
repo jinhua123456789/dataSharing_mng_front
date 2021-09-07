@@ -5,8 +5,9 @@
         <el-input placeholder="请输入视图名" v-model="input1">
           <template slot="prepend">新创建的视图名</template>
         </el-input>
-        <span v-for="n in this.tablecountinfor" :key="n">
+        <span v-for="(n, index) in this.tablecountinfor" :key="n">
           <el-row>
+            {{ n }}: {{ index }}
             <div class="block">
               <span class="demonstration">请选择数据列</span>
               <el-cascader
@@ -14,7 +15,7 @@
                 ref="myCascader"
                 clearable
                 style="width: 300px;"
-                @change="updatecascader"
+                @change="updatecascader(index, item)"
               ></el-cascader>
 
               <span class="demonstration">与数据列</span>
@@ -37,6 +38,7 @@
 </template>
 
 <script>
+import { Col } from 'element-ui'
 export default {
   data() {
     return {
@@ -47,6 +49,10 @@ export default {
       options: [],
       secondoptions: [],
       firsttype: '',
+
+      conditions: [
+        { leftTable: '', leftColumn: '', rightTable: '', rightColunm: '' },
+      ],
     }
   },
   props: ['tData'],
@@ -62,6 +68,7 @@ export default {
       if (this.input1 == '') {
         alert('视图名称不能为空')
       }
+      console.log(this.conditions)
     },
 
     gettdata() {
@@ -70,6 +77,7 @@ export default {
         opchildren = element.tcol
         opchildren.forEach((col) => {
           col.label = col.value
+          // col.label = col.columnname        //如果 数据 名改为 columnname 则使用这条代码
         })
         let option = {
           value: element.tname,
@@ -85,10 +93,14 @@ export default {
       })
     },
 
-    updatecascader(item) {
+    updatecascader(index, item) {
       let node = this.$refs['myCascader'].current //labels
-      console.log(item[0])  //用于填数据结构
-      console.log(item[1])//用于填数据结构
+      console.log('this is index: ', index)
+      console.log(index)
+      console.log(item[0]) //用于填数据结构
+      console.log(item[1]) //用于填数据结构
+      this.conditions[n].leftTable = item[0]
+      this.conditions[n].leftColumn = item[1]
 
       this.secondoptions.forEach((secop) => {
         if (secop.value == item[0]) {
@@ -114,9 +126,11 @@ export default {
       })
     },
 
-    updatesecondcascader(item) {
-      console.log(item[0])//用于填数据结构
-      console.log(item[1])//用于填数据结构
+    updatesecondcascader(item, n) {
+      console.log(item[0]) //用于填数据结构
+      console.log(item[1]) //用于填数据结构
+      this.conditions[n].rightTable = item[0]
+      this.conditions[n].rightColunm = item[1]
     },
   },
 
