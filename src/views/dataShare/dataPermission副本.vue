@@ -1,42 +1,50 @@
 <template>
   <div class="container">
     <el-tabs>
-      <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="数据关系" name="first">
+      <el-tabs
+        v-model="activeName"
+        @tab-click="handleClick"
+      >
+        <el-tab-pane
+          label="数据关系"
+          name="first"
+        >
           <div class="demo-class">
             <el-image
               style="height: 100%; margin: 0 auto;"
               :src="url"
-            ></el-image>
+            />
           </div>
           <!-- <DataRelationship v-if="isDataRelationship"></DataRelationship> -->
         </el-tab-pane>
-        <el-tab-pane label="视图定制" name="second">
+        <el-tab-pane
+          label="视图定制"
+          name="second"
+        >
           <!-- <CreateView v-if="isCreateView"></CreateView> -->
-
 
           <create-view
             v-if="iscreateview"
             :data="iscreateview"
             :data2="iscreateview2"
+            :view-rule="viewRule"
             @toSecondStep="toSecondStep"
-          ></create-view>
-
-
-
+            @addtablename="addtablename"
+          />
 
           <create-view-2
             v-if="iscreateview2"
+            ref="childcom"
             :data="iscreateview"
             :data2="iscreateview2"
-            :tData="tData"
+            :view-rule="viewRule"
             @backToFirstStep="backToFirstStep"
-          ></create-view-2>
-
-
-          
+          />
         </el-tab-pane>
-        <el-tab-pane label="视图列表" name="third ">
+        <el-tab-pane
+          label="视图列表"
+          name="third "
+        >
           <!-- <ViewList v-if="isViewList"></ViewList> -->
           <el-table
             :data="viewTable"
@@ -50,25 +58,32 @@
               prop="viewName"
               label="视图名称"
               min-width="3"
-            ></el-table-column>
+            />
             <el-table-column
               prop="createTime"
               label="创建日期"
               min-width="3"
-            ></el-table-column>
-            <el-table-column prop="permission" label="权限" min-width="2">
+            />
+            <el-table-column
+              prop="permission"
+              label="权限"
+              min-width="2"
+            >
               <el-switch
                 v-model="switchValue"
                 active-color="#13ce66"
                 inactive-color="#ff4949"
-              ></el-switch>
+              />
             </el-table-column>
-            <el-table-column label="操作" min-width="2">
+            <el-table-column
+              label="操作"
+              min-width="2"
+            >
               <template slot-scope="scope">
                 <el-button
-                  @click="handleClickDetail(scope.row)"
                   type="text"
                   size="small"
+                  @click="handleClickDetail(scope.row)"
                 >
                   详情
                 </el-button>
@@ -89,14 +104,35 @@ import createView from './createView'
 import createView2 from './createView2'
 
 export default {
-  name: 'dataPermission',
+  name: 'DataPermission',
   components: {
     createView,
     createView2,
   },
   data() {
     return {
-      tData:[],
+      childcomwidth: '',
+
+      viewRule: {
+        name: '',
+        tables: [],
+        colunms: [
+          {
+            table: 'table1',
+            column: ['column1'],
+            name: 'columnname',
+          },
+        ],
+        conditions: [
+          {
+            leftTable: 'string',
+            leftColumn: 'string',
+            rightTable: 'string',
+            rightColumn: 'string',
+          },
+        ],
+      },
+
       iscreateview: true,
       iscreateview2: false,
 
@@ -118,17 +154,21 @@ export default {
         'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
     }
   },
+  computed: {},
   created() {
+    this.childcomwidth = this.$refs.childcom
     // this.height = this.tableData.length * 50 + 50 + 'px'
   },
-  computed: {},
   methods: {
+    addtablename(tablename) {
+      this.viewRule.name = tablename
+    },
+
     backToFirstStep() {
       this.iscreateview = true
       this.iscreateview2 = false
     },
-    toSecondStep(params,t) {
-      this.tData = t
+    toSecondStep(params) {
       this.iscreateview = false
       this.iscreateview2 = true
     },

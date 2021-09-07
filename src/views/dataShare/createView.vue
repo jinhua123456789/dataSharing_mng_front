@@ -1,156 +1,202 @@
 <template>
-  <div>
-    <el-container>
-      <el-main>
-        <el-row>
-          <sp>选择数据表</sp>
-          <el-select v-model="value" placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-row>
+  <el-container>
+    <el-row :gutter="40">
+      <el-col :span="8" v-for="(item, index) in tableData">
+        <dynamiccard
+          :ptableData="item.columns"
+          :ptableName="item.tableName"
+          :key="index"
+          @modifydata="commitData"
+        ></dynamiccard>
+      </el-col>
+    </el-row>
 
-        <!-- 循环加载可添加数据表项 -->
-        <!-- <el-container>
-      <el-row
-        v-for="item in editableTables"
-        :key="item.name"
-        :label="item.title"
-        :name="item.name"
+    <el-footer>
+      <el-button
+        type="primary"
+        round
+        @click="toSecondStep()"
+        style="margin-top: 10px;"
       >
-        <p>选择数据表</p>
-        <el-select v-model="value" placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
-        <el-button
-          type="delete"
-          icon="el-icon-close"
-          circle
-          @click="removeTable(editableTablesValue)"
-        ></el-button>
-      </el-row>
-    </el-container> -->
-
-        <el-row v-for="item in editableTables" :key="item.index">
-          <sp>选择数据表</sp>
-          <el-select v-model="value" placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-          <!-- 删除选择框 -->
-          <el-button
-            type="delete"
-            icon="el-icon-close"
-            circle
-            @click="removeTable(editableTablesValue)"
-          ></el-button>
-        </el-row>
-        <el-button type="primary" @click="addTab(editableTablesValue)">
-          添加数据表
-        </el-button>
-        <el-checkbox v-model="checked" @editcheckbox="editcheckbox">
-          备选项
-        </el-checkbox>
-
-        <el-card class="box-card">
-          <div slot="header">
-            <span>卡片名称</span>
-            <el-button style="float: right; padding: 3px 0;" type="text">
-              操作按钮
-            </el-button>
-          </div>
-          <div v-for="o in 4" :key="o" class="text item">
-            {{ '列表内容 ' + o }}
-          </div>
-        </el-card>
-
-        <el-button @click="toSecondStep()">
-          下一步
-        </el-button>
-        <p>{{ viewRule }}</p>
-      </el-main>
-    </el-container>
-  </div>
+        下一步
+      </el-button>
+      <el-button
+        type="primary"
+        round
+        @click="savedata"
+        style="margin-top: 10px;"
+      >
+        保存数据
+      </el-button>
+    </el-footer>
+  </el-container>
 </template>
 
 <script>
-import { Table } from 'element-ui'
-import { iscreateview } from './dataPermission'
+// import { createAction } from "@antv/g2/lib/interaction/action";
+import axios from 'axios'
+import { Loading } from 'element-ui'
+import dynamiccard from './dynamicCard'
 
-import { iscreateview2 } from './dataPermission'
 export default {
   data() {
     return {
-      checked: true,
-      editableTablesValue: '0',
-      editableTables: [
-        // {
-        //   index: 1,
-        // },
+      tData: [],
+
+      tableData: [
+        {
+          tableName: '降雨量表',
+          columns: [
+            {
+              value: '2016-05-03',
+              type: 'int',
+            },
+            {
+              value: '2016-05-02',
+              type: 'int',
+            },
+            {
+              value: '2016-05-15',
+              type: 'int',
+            },
+            {
+              value: '2016-05-26',
+              type: 'int',
+            },
+          ],
+        },
+        {
+          tableName: '地址表',
+          columns: [
+            {
+              value: '2016-05-03',
+              type: 'int',
+            },
+            {
+              value: '2016-05-02',
+              type: 'int',
+            },
+          ],
+        },
+        {
+          tableName: '流动人口表',
+          columns: [
+            {
+              value: '2016-05-03',
+              type: 'int',
+            },
+            {
+              value: '2016-05-02',
+              type: 'int',
+            },
+            {
+              value: '2016-05-15',
+              type: 'int',
+            },
+            {
+              value: '2016-05-26',
+              type: 'int',
+            },
+            {
+              value: '2016-05-15',
+              type: 'int',
+            },
+            {
+              value: '2016-05-26',
+              type: 'int',
+            },
+            {
+              value: '2016-05-15',
+              type: 'int',
+            },
+            {
+              value: '2016-05-26',
+              type: 'int',
+            },
+          ],
+        },
+        {
+          tableName: '调查表',
+          columns: [
+            {
+              value: '2016-05-03',
+              type: 'int',
+            },
+            {
+              value: '2016-05-02',
+              type: 'int',
+            },
+            {
+              value: '2016-05-15',
+              type: 'int',
+            },
+          ],
+        },
       ],
-      tableIndex: 0,
+      multipleSelection: [],
     }
   },
-  components: {},
-  props: {
-    iscreateview: Boolean,
-    iscreateview2: Boolean,
-    viewRule: Object,
+
+  components: {
+    dynamiccard,
   },
+  created() {},
+  computed: {},
 
   methods: {
-    editcheckbox(tablename) {
-      this.$emit('addtablename', 'tablename1')
+    // getDownloadHistory() {
+    //   axios.get("http://10.112.64.74:8765/globalHistory").then((res) => {
+    //     this.tableData = res.data;
+    //   });
+    // },
+    commitData(d) {
+      let k = -1
+      let i = this.tData.length
+      if (i > 0) {
+        for (let j = 0; j < i; j++) {
+          if (d.tname == this.tData[j].tname) {
+            //已提交过表项 此时进行修改
+            this.tData[j] = d
+            k = 1
+            //修改后 直接退出循环
+            break
+          }
+        }
+        //未有重复的表名 说明添加新表项 进行push
+        if (k == -1) {
+          this.tData.push(d)
+        }
+      } else {
+        //添加第一个表项
+        this.tData.push(d)
+      }
+
+      //  console.log(tdata.tname);
+    },
+
+    // toloading() {
+    //   this.$router.push({ path: "/viewShow" });
+    // },
+
+    savedata() {},
+
+    handleSelectionChange(val) {
+      this.multipleSelection = val
     },
     toSecondStep() {
-      this.$emit('toSecondStep', 2)
+      this.$emit('toSecondStep', 2, this.tData)
       // iscreateview = false
       // iscreateview2 = true
     },
-    addTab(editableTables) {
-      this.editableTables.push({
-        index: this.tableIndex,
-      })
-      this.tableIndex++
-      console.log(this.tableIndex)
-    },
   },
-  
 }
 </script>
 
 <style scoped>
-.container {
-  padding: 20px;
-}
-
-li {
-  margin: 10px;
-  padding: 10px;
-}
-.download-text {
-  font-size: 12px;
-}
-
-.download-name {
-  font-size: 14px;
-  color: dodgerblue;
-}
-.el-row {
-  margin-top: 5px;
-  margin-bottom: 5px;
+.el-main {
+  display: block;
+  flex-basis: auto;
+  overflow: hidden;
+  padding: 0 20px;
 }
 </style>
