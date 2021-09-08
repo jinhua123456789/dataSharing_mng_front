@@ -15,132 +15,41 @@
       <el-button
         type="primary"
         round
-        @click="toSecondStep()"
-        style="margin-top: 10px;"
+        @click="toThirdStep()"
+        style="margin-top: 10px"
+        >下一步</el-button
       >
-        下一步
-      </el-button>
-      <el-button
-        type="primary"
-        round
-        @click="savedata"
-        style="margin-top: 10px;"
+      <el-button type="primary" round @click="savedata" style="margin-top: 10px"
+        >保存数据</el-button
       >
-        保存数据
-      </el-button>
     </el-footer>
   </el-container>
 </template>
 
 <script>
 // import { createAction } from "@antv/g2/lib/interaction/action";
-import axios from 'axios'
-import { Loading } from 'element-ui'
-import dynamiccard from './dynamicCard'
+import axios from "axios";
+import { Loading } from "element-ui";
+import dynamiccard from "./dynamicCard";
 
 export default {
   data() {
     return {
       tData: [],
 
-      tableData: [
-        {
-          tableName: '降雨量表',
-          columns: [
-            {
-              value: '2016-05-03',
-              type: 'int',
-            },
-            {
-              value: '2016-05-02',
-              type: 'int',
-            },
-            {
-              value: '2016-05-15',
-              type: 'int',
-            },
-            {
-              value: '2016-05-26',
-              type: 'int',
-            },
-          ],
-        },
-        {
-          tableName: '地址表',
-          columns: [
-            {
-              value: '2016-05-03',
-              type: 'int',
-            },
-            {
-              value: '2016-05-02',
-              type: 'int',
-            },
-          ],
-        },
-        {
-          tableName: '流动人口表',
-          columns: [
-            {
-              value: '2016-05-03',
-              type: 'int',
-            },
-            {
-              value: '2016-05-02',
-              type: 'int',
-            },
-            {
-              value: '2016-05-15',
-              type: 'int',
-            },
-            {
-              value: '2016-05-26',
-              type: 'int',
-            },
-            {
-              value: '2016-05-15',
-              type: 'int',
-            },
-            {
-              value: '2016-05-26',
-              type: 'int',
-            },
-            {
-              value: '2016-05-15',
-              type: 'int',
-            },
-            {
-              value: '2016-05-26',
-              type: 'int',
-            },
-          ],
-        },
-        {
-          tableName: '调查表',
-          columns: [
-            {
-              value: '2016-05-03',
-              type: 'int',
-            },
-            {
-              value: '2016-05-02',
-              type: 'int',
-            },
-            {
-              value: '2016-05-15',
-              type: 'int',
-            },
-          ],
-        },
-      ],
+      // tableData: [],
       multipleSelection: [],
-    }
+    };
   },
+   props: [ "tableData"],
 
   components: {
     dynamiccard,
   },
-  created() {},
+  created() { 
+ 
+
+  },
   computed: {},
 
   methods: {
@@ -150,46 +59,41 @@ export default {
     //   });
     // },
     commitData(d) {
-      let k = -1
-      let i = this.tData.length
+      let k = -1;
+      let i = this.tData.length;
       if (i > 0) {
         for (let j = 0; j < i; j++) {
           if (d.tname == this.tData[j].tname) {
             //已提交过表项 此时进行修改
-            this.tData[j] = d
-            k = 1
+            this.tData[j] = d;
+            k = 1;
             //修改后 直接退出循环
-            break
+            break;
           }
         }
         //未有重复的表名 说明添加新表项 进行push
         if (k == -1) {
-          this.tData.push(d)
+          this.tData.push(d);
         }
       } else {
         //添加第一个表项
-        this.tData.push(d)
+        this.tData.push(d);
       }
 
-      //  console.log(tdata.tname);
     },
-
-    // toloading() {
-    //   this.$router.push({ path: "/viewShow" });
-    // },
 
     savedata() {},
 
     handleSelectionChange(val) {
-      this.multipleSelection = val
+      this.multipleSelection = val;
     },
-    toSecondStep() {
-      this.$emit('toSecondStep', 2, this.tData)
+    toThirdStep() {
+      this.$emit("toThirdStep", this.tData);
       // iscreateview = false
       // iscreateview2 = true
     },
   },
-}
+};
 </script>
 
 <style scoped>
@@ -199,4 +103,5 @@ export default {
   overflow: hidden;
   padding: 0 20px;
 }
+
 </style>
