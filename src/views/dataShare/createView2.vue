@@ -40,6 +40,7 @@
 export default {
   data() {
     return {
+      count: 0,
       input1: '',
       tablecount: 0,
       tablecountinfor: 0,
@@ -47,10 +48,16 @@ export default {
       options: [],
       secondoptions: [],
       firsttype: '',
-      tablestopost:[],
-      columnstopost:[],
+      tablestopost: [],
+      columnstopost: [
+        {
+          table: '',
+          column: '',
+          name: '',
+        },
+      ],
       conditions: [
-        { leftTable: '', leftColumn: '', rightTable: '', rightColunm: '' },
+        // { leftTable: '', leftColumn: '', rightTable: '', rightColunm: '' },
       ],
     }
   },
@@ -62,8 +69,8 @@ export default {
       this.$emit('backToFirstStep', 2)
     },
     toThirdStep() {
-      console.log('tdata',this.tData)
-      console.log('options',this.options)
+      console.log('tdata', this.tData)
+      console.log('options', this.options)
       if (this.input1 == '') {
         alert('视图名称不能为空')
       } else {
@@ -87,10 +94,17 @@ export default {
 
     gettdata() {
       this.tData.forEach((element) => {
+        this.tablecount++
         this.tablestopost.push(element.tname)
+        console.log('tablestopost', this.tablestopost)
+
         let opchildren = []
         opchildren = element.tcol
         opchildren.forEach((col) => {
+          // this.count++
+          // this.columnstopost[this.count].table = element.name
+          // this.columnstopost[this.count].column = element.column
+          // this.columnstopost[this.count].name = element.name + '_' + element.column
           col.label = col.value
           // col.label = col.columnname        //如果 数据 名改为 columnname 则使用这条代码
         })
@@ -103,14 +117,33 @@ export default {
         this.options.push(option)
 
         this.secondoptions.push(JSON.parse(JSON.stringify(option)))
-        this.tablecount++
+
         for (let index = 0; index < this.tablecountinfor; index++) {
-          this.conditions[index].leftTable = ''
-          this.conditions[index].leftColumn = ''
-          this.conditions[index].rightTable = ''
-          this.conditions[index].rightColunm = ''
+          // this.conditions[index].leftTable = ''
+          // this.conditions[index].leftColumn = ''
+          // this.conditions[index].rightTable = ''
+          // this.conditions[index].rightColunm = ''
+          // this.conditions.push({
+          //   leftTable: '',
+          //   leftColumn: '',
+          //   rightTable: '',
+          //   rightColunm: '',
+          // })
+          this.conditions.push(
+            JSON.parse(
+              JSON.stringify({
+                leftTable: '',
+                leftColumn: '',
+                rightTable: '',
+                rightColunm: '',
+              }),
+            ),
+          )
+          console.log('tablecountinfor', this.tablecountinfor)
+          console.log('conditions', this.conditions)
         }
         console.log('op', option)
+        console.log('conditions', this.conditions)
       })
     },
 
@@ -128,13 +161,11 @@ export default {
           secop.children.forEach((child) => {
             if (child.label == item[1]) {
               this.firsttype = child.type
-              console.log(child.type)
             }
           })
         } else if (secop.value != item[0]) {
           secop.disabled = false
           secop.children.forEach((child) => {
-            console.log(this.firsttype, child.type)
             if (child.type == this.firsttype) {
               child.disabled = false
             } else {
@@ -143,17 +174,19 @@ export default {
           })
         }
       })
+      console.log(index)
       this.conditions[index - 1].leftTable = item[0]
       this.conditions[index - 1].leftColumn = item[1]
-      console.log(this.conditions)
+      console.log('conditions', this.conditions)
     },
 
     updatesecondcascader(index, item) {
       console.log(item[0]) //用于填数据结构
       console.log(item[1]) //用于填数据结构
+      console.log(index)
       this.conditions[index - 1].rightTable = item[0]
       this.conditions[index - 1].rightColunm = item[1]
-      console.log(this.conditions)
+      console.log('conditions', this.conditions)
     },
   },
 
@@ -165,10 +198,19 @@ export default {
         that.screenWidth = window.screenWidth
       })()
     }
+
+    //this.tablecountinfor = this.tablecount - 1
     this.gettdata()
     this.tablecountinfor = this.tablecount - 1
-    console.log('infor', this.tablecountinfor)
+    console.log('tablecountinfor', this.tablecountinfor)
     console.log('tablecount', this.tablecount)
+    this.conditions = new Array(this.tablecountinfor).fill({
+      leftTable: '',
+      leftColumn: '',
+      rightTable: '',
+      rightColunm: '',
+    })
+    console.log('indexofconditon?', this.conditions)
   },
 }
 </script>
