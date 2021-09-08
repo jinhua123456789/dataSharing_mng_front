@@ -19,12 +19,19 @@
         <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column
           :label="ptableName"
-          prop="value"
+          prop="columnName"
           :key="index"
           align="center"
           width="120"
         >
           <!-- <template slot-scope="scope">{{ scope.row.date }}</template> -->
+        </el-table-column>
+        <el-table-column
+          prop="type"
+          label="对应数据类型"
+          width="120"
+          align="center"
+        >
         </el-table-column>
       </el-table>
       <div style="margin-top: 10px; margin-bottom: 10px">
@@ -60,5 +67,3 @@ export default {
   },
 };
 </script>
-
-//两件事 第一件事 检查最后所有数据是否从子组件发送到父组件 即父组件是用append添加数据  第二件事 在最后点击下一步时 数据从子组件发送父组件

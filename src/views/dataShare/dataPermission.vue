@@ -5,7 +5,7 @@
         <el-tab-pane label="数据关系" name="first">
           <div class="demo-class">
             <el-image
-              style="height: 100%; margin: 0 auto;"
+              style="height: 100%; margin: 0 auto"
               :src="url"
             ></el-image>
           </div>
@@ -14,27 +14,34 @@
         <el-tab-pane label="视图定制" name="second">
           <!-- <CreateView v-if="isCreateView"></CreateView> -->
 
-
-          <create-view
+          <create-view-3
             v-if="iscreateview"
             :data="iscreateview"
             :data2="iscreateview2"
+            :data3="iscreateview3"
             @toSecondStep="toSecondStep"
-          ></create-view>
+          ></create-view-3>
 
-
-
-
-          <create-view-2
+          <create-view
             v-if="iscreateview2"
             :data="iscreateview"
             :data2="iscreateview2"
+            :data3="iscreateview3"
+            :tableData="selectTables"
+            @toThirdStep="toThirdStep"
+          ></create-view>
+
+          <create-view-2
+            v-if="iscreateview3"
+            :data="iscreateview"
+            :data2="iscreateview2"
+            :data3="iscreateview3"
             :tData="tData"
-            @backToFirstStep="backToFirstStep"
+            
           ></create-view-2>
 
 
-          
+
         </el-tab-pane>
         <el-tab-pane label="视图列表" name="third ">
           <!-- <ViewList v-if="isViewList"></ViewList> -->
@@ -42,7 +49,7 @@
             :data="viewTable"
             class="list_wrap"
             border
-            style="width: 100%; margin-left: 0px; margin-top: 1%;"
+            style="width: 100%; margin-left: 0px; margin-top: 1%"
             :row-style="{ height: '50px' }"
             alt=""
           >
@@ -85,93 +92,108 @@
 </template>
 
 <script>
-import createView from './createView'
-import createView2 from './createView2'
+import createView from "./createView";
+import createView2 from "./createView2";
+import CreateView3 from "./createView3.vue";
 
 export default {
-  name: 'dataPermission',
+  name: "dataPermission",
   components: {
     createView,
     createView2,
+    CreateView3,
   },
   data() {
     return {
-      tData:[],
+      selectTables:[],
+      tData: [],
       iscreateview: true,
       iscreateview2: false,
+      iscreateview3: false,
 
       // height: 1000,
       switchValue: true,
       viewTable: [
         //需要确定 视图列表展示数据项，以及获得数据视图列表的数据格式
         {
-          date: '2016-05-03',
-          viewName: 'exsl1',
+          date: "2016-05-03",
+          viewName: "exsl1",
         },
       ],
 
-      activeName: 'first',
+      activeName: "first",
       isDataRelationship: true,
       isCreateView: false,
       isViewList: false,
-      url:
-        'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-    }
+      url: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+    };
   },
   created() {
     // this.height = this.tableData.length * 50 + 50 + 'px'
   },
   computed: {},
   methods: {
-    backToFirstStep() {
-      this.iscreateview = true
-      this.iscreateview2 = false
-    },
-    toSecondStep(params,t) {
+    toThirdStep(t) {
+      this.iscreateview = false;
+      this.iscreateview2 = false;
+      this.iscreateview3 = true;
+      console.log("回到dataPermission！ 打印 选中的表项！")
       this.tData = t
-      this.iscreateview = false
-      this.iscreateview2 = true
+      console.log(this.tData)
     },
+    toSecondStep(s) {
+      this.selectTables = s;
+      // console.log("跳转回dataPermission！")
+      // console.log(this.selectTables);
+      this.iscreateview = false;
+      this.iscreateview2 = true;
+      this.iscreateview3 = false;
+    },
+    // toSecondStep(params,t) {
+    //   this.tData = t
+    //   this.iscreateview = false
+    //   this.iscreateview2 = true
+    // },
     getPictureUrl() {
       if (this.isDataRelationship) {
         //获取图片url待完善，包括确定向后端传递参数，确定后端生成url的方式以及链接，服务器地址
         this.$axios
-          .get('http://www.baidu.com', {
+          .get("http://www.baidu.com", {
             params: {
               userId: this.userId,
             },
           })
           .then((respond) => {
-            this.url = respond.url
+            this.url = respond.url;
           })
           .catch(function (err) {
-            console.log(err)
-          })
+            console.log(err);
+          });
       }
     },
     handleClickDetail(row) {
       //用于查看视图详情
 
-      console.log('组成表以及关系')
+      console.log("组成表以及关系");
     },
     handleClick(tab) {
-      console.log(tab)
-      if (tab.name === 'first') {
-        this.isDataRelationship = true
-        this.isCreateView = false
-        this.isViewList = false
-      } else if (tab.name === 'second') {
-        this.isDataRelationship = false
-        this.isCreateView = true
-        this.isViewList = false
-      } else if (tab.name === 'third') {
-        this.isDataRelationship = false
-        this.isCreateView = false
-        this.isViewList = true
+      console.log(tab);
+      if (tab.name === "first") {
+        this.isDataRelationship = true;
+        this.isCreateView = false;
+        this.isViewList = false;
+      } else if (tab.name === "second") {
+        this.isDataRelationship = false;
+        this.isCreateView = true;
+        this.isViewList = false;
+      } else if (tab.name === "third") {
+        this.isDataRelationship = false;
+        this.isCreateView = false;
+        this.isViewList = true;
       }
     },
   },
-}
+};
 </script>
 
 <style scoped>
