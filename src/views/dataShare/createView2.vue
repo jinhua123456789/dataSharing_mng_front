@@ -5,9 +5,8 @@
         <el-input placeholder="请输入视图名" v-model="input1">
           <template slot="prepend">新创建的视图名</template>
         </el-input>
-        <span v-for="(n, index) in this.tablecountinfor" :key="n">
+        <span v-for="index in this.tablecountinfor" :key="index">
           <el-row>
-            {{ n }}: {{ index }}
             <div class="block">
               <span class="demonstration">请选择数据列</span>
               <el-cascader
@@ -15,7 +14,7 @@
                 ref="myCascader"
                 clearable
                 style="width: 300px;"
-                @change="updatecascader(index, item)"
+                @change="updatecascader(index, $event)"
               ></el-cascader>
 
               <span class="demonstration">与数据列</span>
@@ -24,7 +23,7 @@
                 clearable
                 ref="='mySecondCascader"
                 style="width: 300px;"
-                @change="updatesecondcascader"
+                @change="updatesecondcascader(index, $event)"
               ></el-cascader>
               <span>链接</span>
             </div>
@@ -38,7 +37,6 @@
 </template>
 
 <script>
-import { Col } from 'element-ui'
 export default {
   data() {
     return {
@@ -49,7 +47,8 @@ export default {
       options: [],
       secondoptions: [],
       firsttype: '',
-
+      tablestopost:[],
+      columnstopost:[],
       conditions: [
         { leftTable: '', leftColumn: '', rightTable: '', rightColunm: '' },
       ],
@@ -63,16 +62,32 @@ export default {
       this.$emit('backToFirstStep', 2)
     },
     toThirdStep() {
-      console.log(this.tData)
-      console.log(this.input1)
+      console.log('tdata',this.tData)
+      console.log('options',this.options)
       if (this.input1 == '') {
         alert('视图名称不能为空')
+      } else {
+        this.$axios
+          .get('http://10.112.64.74:8765/history', {
+            params: {
+              name: this.input1,
+              tables: [],
+              conditions: this.conditions,
+            },
+          })
+          .then((respond) => {
+            // this.tableData = respond.data;
+          })
+          .catch(function (err) {
+            console.log(err)
+          })
       }
       console.log(this.conditions)
     },
 
     gettdata() {
       this.tData.forEach((element) => {
+        this.tablestopost.push(element.tname)
         let opchildren = []
         opchildren = element.tcol
         opchildren.forEach((col) => {
@@ -89,6 +104,12 @@ export default {
 
         this.secondoptions.push(JSON.parse(JSON.stringify(option)))
         this.tablecount++
+        for (let index = 0; index < this.tablecountinfor; index++) {
+          this.conditions[index].leftTable = ''
+          this.conditions[index].leftColumn = ''
+          this.conditions[index].rightTable = ''
+          this.conditions[index].rightColunm = ''
+        }
         console.log('op', option)
       })
     },
@@ -99,8 +120,6 @@ export default {
       console.log(index)
       console.log(item[0]) //用于填数据结构
       console.log(item[1]) //用于填数据结构
-      this.conditions[n].leftTable = item[0]
-      this.conditions[n].leftColumn = item[1]
 
       this.secondoptions.forEach((secop) => {
         if (secop.value == item[0]) {
@@ -124,13 +143,17 @@ export default {
           })
         }
       })
+      this.conditions[index - 1].leftTable = item[0]
+      this.conditions[index - 1].leftColumn = item[1]
+      console.log(this.conditions)
     },
 
-    updatesecondcascader(item, n) {
+    updatesecondcascader(index, item) {
       console.log(item[0]) //用于填数据结构
       console.log(item[1]) //用于填数据结构
-      this.conditions[n].rightTable = item[0]
-      this.conditions[n].rightColunm = item[1]
+      this.conditions[index - 1].rightTable = item[0]
+      this.conditions[index - 1].rightColunm = item[1]
+      console.log(this.conditions)
     },
   },
 
