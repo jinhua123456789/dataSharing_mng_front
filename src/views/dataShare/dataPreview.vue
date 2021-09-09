@@ -185,61 +185,70 @@
         })
       },
       clickSubmit() {
-        var that = this;
-        var submit = { // JSON数据    名称-值对
-          'rid': this.$route.query.id,
-          'email': '',
-          'type': 'admin',
+        if(this.$route.query.check === 1){ // 如果该条数据存在侵权行为
+          this.$message({
+            message: '该条数据可能侵权，不允许下载',
+            type: 'warning'
+          });
+          return;
         }
-        this.$axios({
-          method: 'post',
-          url: '/dataShare/download/downloadFile',
-          contentType: 'application/json; charset=UTF-8', // 解决415错误
-          headers: {'Content-Type': 'application/json;charset=UTF-8;application/octet-stream'},
-          dataType: 'json',
-          data: JSON.stringify(submit),
-          responseType: 'arraybuffer',
-          onDownloadProgress(progress) {
-            that.percentageNum = (progress.loaded / that.size) * 100
+        else{
+          var that = this;
+          var submit = { // JSON数据    名称-值对
+            'rid': this.$route.query.id,
+            'email': '',
+            'type': 'admin',
           }
-        }).then((res) => {
-          if (!res) {
-            this.$message.error("下载模板文件失败");
-            return false;
-          }
-          console.log(res)
-          //const blob = new Blob([res.data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'});
-          const blob = new Blob([res.data])
-          const downloadElement = document.createElement('a');
-          const href = window.URL.createObjectURL(blob);
+          this.$axios({
+            method: 'post',
+            url: '/dataShare/download/downloadFile',
+            contentType: 'application/json; charset=UTF-8', // 解决415错误
+            headers: {'Content-Type': 'application/json;charset=UTF-8;application/octet-stream'},
+            dataType: 'json',
+            data: JSON.stringify(submit),
+            responseType: 'arraybuffer',
+            onDownloadProgress(progress) {
+              that.percentageNum = (progress.loaded / that.size) * 100
+            }
+          }).then((res) => {
+            if (!res) {
+              this.$message.error("下载模板文件失败");
+              return false;
+            }
+            console.log(res)
+            //const blob = new Blob([res.data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'});
+            const blob = new Blob([res.data])
+            const downloadElement = document.createElement('a');
+            const href = window.URL.createObjectURL(blob);
 
-          let contentDisposition = res.headers['content-disposition'];  //从response的headers中获取filename, 后端response.setHeader("Content-disposition", "attachment; filename=xxxx.docx") 设置的文件名;
-          let patt = new RegExp("filename=([^;]+\\.[^\\.;]+);*");
-          let result = patt.exec(contentDisposition);
-          let filename = decodeURI(result[1]);
-          downloadElement.style.display = 'none';
-          downloadElement.href = href;
-          //window.open(href)
-          downloadElement.download = filename; //下载后文件名
-          document.body.appendChild(downloadElement);
-          downloadElement.click(); //点击下载
-          document.body.removeChild(downloadElement); //下载完成移除元素
-          window.URL.revokeObjectURL(href); //释放掉blob对象
-          if (that.percentageNum === 100) {
-            this.$message({
-              message: '文件' + filename + '下载完成！',
-              type: 'success'
-            });
-            that.percentageNum = 0
-          } else {
-            this.$message.error('文件下载失败！');
-            that.percentageNum = 0
-          }
-        }).catch(error => {
-          alert(error)
-          console.log(error)
-        })
-        this.dialogFormVisible = false
+            let contentDisposition = res.headers['content-disposition'];  //从response的headers中获取filename, 后端response.setHeader("Content-disposition", "attachment; filename=xxxx.docx") 设置的文件名;
+            let patt = new RegExp("filename=([^;]+\\.[^\\.;]+);*");
+            let result = patt.exec(contentDisposition);
+            let filename = decodeURI(result[1]);
+            downloadElement.style.display = 'none';
+            downloadElement.href = href;
+            //window.open(href)
+            downloadElement.download = filename; //下载后文件名
+            document.body.appendChild(downloadElement);
+            downloadElement.click(); //点击下载
+            document.body.removeChild(downloadElement); //下载完成移除元素
+            window.URL.revokeObjectURL(href); //释放掉blob对象
+            if (that.percentageNum === 100) {
+              this.$message({
+                message: '文件' + filename + '下载完成！',
+                type: 'success'
+              });
+              that.percentageNum = 0
+            } else {
+              this.$message.error('文件下载失败！');
+              that.percentageNum = 0
+            }
+          }).catch(error => {
+            alert(error)
+            console.log(error)
+          })
+          this.dialogFormVisible = false
+        }
       }
     },
 

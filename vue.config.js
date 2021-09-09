@@ -44,7 +44,7 @@ module.exports = {
       //   }
       // },
       [process.env.VUE_APP_BASE_API + '/businessinformation']: {
-        target: `http://112.98.239.146:8088`,
+         target: `http://112.98.239.146:8088`,
         // target: `http://10.112.64.74:8088`,
         changeOrigin: true,
         pathRewrite: {
@@ -60,19 +60,11 @@ module.exports = {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
       },
-      [process.env.VUE_APP_BASE_API + '/dataShare']: {
-        target: `http://10.112.64.74:8089`,
-        // target: `http://10.112.64.74:8088`,
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API + '/dataShare']: '/publicDataSharing'
-        }
-      },
       '/dataShare': {
-        target: 'http://10.112.64.74:8089',   //设置你调用的接口域名和端口号 别忘了加http
-        changeOrigin: true,
+        target: 'http://10.128.247.9:8080',   //设置你调用的接口域名和端口号 别忘了加http
         pathRewrite: {
-          '^/dataShare': '/publicDataSharing'//这里理解成用‘/api’代替target里面的地址，后面组件中我们掉接口时直接用api代替 比如我要调用'http://40.00.100.100:3002/user/add'，直接写‘/api/user/add’即可
+          changeOrigin: true,
+          '^/dataShare': ''//这里理解成用‘/api’代替target里面的地址，后面组件中我们掉接口时直接用api代替 比如我要调用'http://40.00.100.100:3002/user/add'，直接写‘/api/user/add’即可
         }
       },
     }//,
@@ -132,34 +124,34 @@ module.exports = {
             .plugin('ScriptExtHtmlWebpackPlugin')
             .after('html')
             .use('script-ext-html-webpack-plugin', [{
-              // `runtime` must same as runtimeChunk name. default is `runtime`
+            // `runtime` must same as runtimeChunk name. default is `runtime`
               inline: /runtime\..*\.js$/
             }])
             .end()
           config
             .optimization.splitChunks({
-            chunks: 'all',
-            cacheGroups: {
-              libs: {
-                name: 'chunk-libs',
-                test: /[\\/]node_modules[\\/]/,
-                priority: 10,
-                chunks: 'initial' // only package third parties that are initially dependent
-              },
-              elementUI: {
-                name: 'chunk-elementUI', // split elementUI into a single package
-                priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
-                test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
-              },
-              commons: {
-                name: 'chunk-commons',
-                test: resolve('src/components'), // can customize your rules
-                minChunks: 3, //  minimum common number
-                priority: 5,
-                reuseExistingChunk: true
+              chunks: 'all',
+              cacheGroups: {
+                libs: {
+                  name: 'chunk-libs',
+                  test: /[\\/]node_modules[\\/]/,
+                  priority: 10,
+                  chunks: 'initial' // only package third parties that are initially dependent
+                },
+                elementUI: {
+                  name: 'chunk-elementUI', // split elementUI into a single package
+                  priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
+                  test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
+                },
+                commons: {
+                  name: 'chunk-commons',
+                  test: resolve('src/components'), // can customize your rules
+                  minChunks: 3, //  minimum common number
+                  priority: 5,
+                  reuseExistingChunk: true
+                }
               }
-            }
-          })
+            })
           config.optimization.runtimeChunk('single')
         }
       )

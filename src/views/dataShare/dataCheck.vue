@@ -1,19 +1,16 @@
 <template>
   <div class="dormitory">
     <br>
+    <el-header style=" background-color: #B3C0D1;
+    color: #333;
+    text-align:left;
+    height: 30px;line-height: 30px">数据申请任务管理
+    </el-header>
+    <br>
+    <br>
     <div class="searchWord">
       <!--  1-搜索框             -->
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
-<!--        <el-form-item>-->
-<!--          <el-input v-model="listQuery.contentTitle"-->
-<!--                    clearable-->
-<!--                    placeholder="标题"/>-->
-<!--        </el-form-item>-->
-        <!--        <el-form-item >-->
-        <!--          <el-select v-model="listQuery.blockId" placeholder="版块名称" clearable>-->
-        <!--            <el-option v-for="item in blockList" :label="item.blockName" :value="item.id" :key="item.id"/>-->
-        <!--          </el-select>-->
-        <!--        </el-form-item>-->
         <el-form-item>
           <el-select v-model="listQuery.contentStatus" clearable placeholder="内容状态">
             <el-option label="上线" value="up"></el-option>
@@ -31,7 +28,142 @@
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" @click="clickSearch">查询</el-button>
         </el-form-item>
+        <el-button
+          @click="dialogFormVisible = true"
+          style="
+            margin-right: 60px;
+            float:right;
+            "
+          type="primary"
+        >上传数据 <i class="el-icon-upload el-icon--right"></i
+        ></el-button>
       </el-form>
+
+      <el-dialog
+        :close-on-click-modal="false"
+        @close="resetForm"
+        title="上传数据"
+        :visible.sync="dialogFormVisible"
+      >
+        <el-form
+          :model="form"
+          :rules="rules2"
+          ref="form"
+          class="demo-ruleForm"
+          size="medium"
+        >
+          <el-form-item label="题目" prop="title" :label-width="formLabelWidth">
+            <el-input
+              v-model="form.title"
+              autocomplete="off"
+              placeholder="请输入数据集题目"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="作者"
+            prop="authors"
+            :label-width="formLabelWidth"
+            style="margin-top: 25px"
+          >
+            <el-input
+              v-model="form.authors"
+              autocomplete="off"
+              placeholder="请输入数据集作者"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="关键词"
+            prop="keyword"
+            :label-width="formLabelWidth"
+            style="margin-top: 25px"
+          >
+            <el-input
+              v-model="form.keyword"
+              autocomplete="off"
+              placeholder="请输入数据集关键词"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="摘要"
+            prop="abstracts"
+            :label-width="formLabelWidth"
+            style="margin-top: 25px"
+          >
+            <el-input
+              type="textarea"
+              v-model="form.abstracts"
+              autocomplete="off"
+              :rows="3"
+              placeholder="请输入数据集摘要"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="上传理由"
+            prop="reason"
+            :label-width="formLabelWidth"
+            style="margin-top: 25px"
+          >
+            <el-input
+              type="textarea"
+              v-model="form.reason"
+              autocomplete="off"
+              :rows="3"
+              placeholder="请输入数据集上传理由"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="上传文件"
+            :label-width="formLabelWidth"
+            prop="fileList"
+            ref="fileList"
+            style="margin-top: 25px"
+          >
+            <el-upload
+              class="upload-demo"
+              name="file"
+              :auto-upload="false"
+              action=""
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :before-remove="beforeRemove"
+              :on-change="fileChange"
+              multiple
+              :limit="1"
+              :on-exceed="handleExceed"
+              :file-list="form.fileList"
+              accept=".pdf,.xls,.xlsx,.zip,.png,.jpg,.csv"
+            >
+              <el-button style="height: 30px; width: 100px" type="primary"
+              >点击上传</el-button
+              >
+              <div slot="tip" class="el-upload__tip">
+                支持格式：.pdf .xls .xlsx .zip .png .jpg .csv
+                .zip，一次只能上传一个文件且大小不能超过300MB
+              </div>
+            </el-upload>
+          </el-form-item>
+          <el-progress
+            v-if="show"
+            style="width: 680px; margin-left: 60px; margin-top: 20px"
+            :text-inside="true"
+            :stroke-width="15"
+            :percentage="percent"
+          ></el-progress>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button
+            style="height: 30px; width: 70px"
+            @click="dialogFormVisible = false"
+          >取 消</el-button
+          >
+          <el-button
+            style="height: 30px; width: 70px"
+            type="primary"
+            @click="submitForm('form')"
+          >确 定</el-button
+          >
+        </div>
+      </el-dialog>
 
     </div>
     <div class="dormitoryData">
@@ -43,12 +175,12 @@
         fit
         highlight-current-row
         style="width: 100%">
-        <el-table-column label="内容标题" align="center" width="220px">
+        <el-table-column label="内容标题" align="center">
           <template slot-scope="{row}">
             <span>{{ row.title }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="内容状态" align="center" width="100px">
+        <el-table-column label="内容状态" align="center" width="120">
           <template slot-scope="{row}">
             <el-tag style="width: 80px; height:30px; text-align: center" v-if="row.statusApply=='up'"
                     type="success">
@@ -60,11 +192,15 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="审核状态" align="center" width="100px">
+        <el-table-column label="审核状态" align="center" width="120">
           <template slot-scope="{row}">
             <el-tag style="width: 80px; height:30px; text-align: center" v-if="row.statusCheck=='undo'"
                     type="primary">
-              待审核
+              管理员待审
+            </el-tag>
+            <el-tag style="width: 80px; height:30px; text-align: center" v-if="row.statusCheck=='sys'"
+                    type="primary">
+              系统审核中
             </el-tag>
             <el-tag style="width: 80px; height:30px; text-align: center" v-if="row.statusCheck=='yes'"
                     type="success">
@@ -80,12 +216,12 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="创建人" align="center" width="100px">
+        <el-table-column label="申请人" align="center" width="150">
           <template slot-scope="{row}">
             <span>{{ row.name }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="申请时间" align="center" width="100px">
+        <el-table-column label="申请时间" align="center" width="200">
           <template slot-scope="{row}">
             <span>{{ row.timeApply }}</span>
           </template>
@@ -95,30 +231,36 @@
         <!--            <span>{{ row.auditName }}</span>-->
         <!--          </template>-->
         <!--        </el-table-column>-->
-        <el-table-column label="审核时间" align="center" width="100px">
+        <el-table-column label="审核时间" align="center" width="200">
           <template slot-scope="{row}">
             <span>{{ row.timeCheck }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="审核意见" align="center">
+        <el-table-column label="审核意见" align="center" width="100">
           <template slot-scope="{row}">
-            <span>{{ row.checkReason }}</span>
+            <!--<span>{{ row.checkReason }}</span>-->
+<!--
+            <el-button @click="showComment(row.checkReason)" type="text" size="small" :disabled="(row.statusCheck == 'undo') ? true : false">查看</el-button>
+-->
+            <el-button @click="showComment(row.checkReason)" type="text" size="small">查看</el-button>
+
           </template>
         </el-table-column>
-        <el-table-column label="操作 " prop="operation" align="center" width="240px">
+        <el-table-column label="操作 " prop="operation" align="center" width="400">
           <template slot-scope="{row}">
-            <el-button size="small" type="primary" class="operationStyle"  @click="getInFetchList(row.aid, row.statusApply, row.statusCheck)"
-                       :disabled="((row.statusCheck == 'undo' && row.statusApply == 'up') || (row.statusCheck == 'yes' && row.statusApply == 'up') || (row.statusCheck == 'no' && row.statusApply == 'down') ) ? false : true">预览</el-button>
+            <el-button size="small" type="primary" @click="getInFetchList(row.aid, row.statusApply, row.statusCheck,row.checkReason)" :disabled="(row.statusCheck != 'sys' ) ? false : true">预览</el-button>
 
-            <el-button size="small" type="primary" style="width: 110px;margin-left:0" class="operationStyle" @click="auditYesList(row.aid, row.statusApply)"
-                       :disabled="(row.statusCheck == 'undo') ? false : true">审核通过
+            <el-button size="small" type="primary" @click="auditYesList(row.aid, row.statusApply)"
+                       :disabled="(row.statusCheck == 'undo' ) ? false : true">审核通过
+            </el-button>
+            <el-button disabled="row.undo" size="small" type="danger" @click="auditNoList(row.aid, row.statusApply)"
+                       :disabled="(row.statusCheck == 'undo') ? false : true">审核不通过
             </el-button>
             <el-button
               :disabled="((row.statusCheck == 'yes' && row.statusApply == 'up') || (row.statusCheck == 'no' && row.statusApply == 'down') ) ? false : true"
-              size="small" type="danger"  @click="offLineInModifyList(row.aid)">下线
-            </el-button>
-            <el-button style="width: 110px;margin-left:0" disabled="row.undo" size="small" type="danger" @click="auditNoList(row.aid, row.statusApply)"
-                       :disabled="(row.statusCheck == 'undo') ? false : true">审核不通过
+              size="small"
+              type="danger"
+              @click="offLineInModifyList(row.aid)">下线
             </el-button>
             <!--            <el-button v-if="row.statusApply=='下线'"-->
             <!--                       size="small"-->
@@ -127,13 +269,6 @@
 
           </template>
         </el-table-column>
-<!--        <el-table-column label="下载用户详情" align="center" width="80px">-->
-<!--          <template slot-scope="{row}">-->
-<!--            <el-tag style="width: 60px; height:30px; text-align: center" @click="jumpToDetail(row.aid)">-->
-<!--            查看-->
-<!--            </el-tag>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
       </el-table>
 
       <!--分页插件-->
@@ -175,19 +310,7 @@
           <el-button @click="dialogAuditVisible = false">取 消</el-button>
         </div>
       </el-dialog>
-      <el-dialog title="下载数据用户详情" style="padding: 1px 20px;" :visible.sync="userDetailVisible" width="50%">
-        <el-table :data="userDetailData" stripe style="width: 100%">
-          <el-table-column prop="date" label="日期" width="180">
-          </el-table-column>
-          <el-table-column prop="name" label="姓名" width="180">
-          </el-table-column>
-          <el-table-column prop="address" label="地址">
-          </el-table-column>
-        </el-table>
-        <span slot="footer" class="dialog-footer">
-                <el-button style="height: 30px; width: 70px" @click="userDetailVisible = false">取 消</el-button>
-            </span>
-      </el-dialog>
+
     </div>
   </div>
 </template>
@@ -204,17 +327,52 @@ import Pagination from '@/components/Pagination'
 export default {
   name: "dataCheck",
   components: {Pagination},
-  inject:['reload'],
+
   data() {
     return {
-      listLoading:false,
       id: 0,
       statusApply: '',
+      dialogFormVisible: false,
       statusCheck: '',
       blockList: [],
       tables: [],
       total: 0,
+      show: false,
       email: '',
+      formLabelWidth: "120px",
+      rules2: {
+        title: [
+          { required: true, message: "请输入数据集题目", trigger: "change" },
+        ],
+        authors: [
+          { required: true, message: "请输入数据集作者", trigger: "change" },
+        ],
+        keyword: [
+          { required: true, message: "请输入数据集关键词", trigger: "change" },
+        ],
+        abstracts: [
+          { required: true, message: "请输入数据集摘要", trigger: "change" },
+        ],
+        reason: [
+          {
+            required: true,
+            message: "请输入数据集上传理由",
+            trigger: "change",
+          },
+        ],
+        fileList: [
+          { required: true, message: "请上传文件", trigger: "change" },
+        ],
+      },
+      percent: 0,
+      form: {
+        title: "",
+          authors: "",
+          keyword: "",
+          abstracts: "",
+          reason: "",
+          fileList: [],
+      },
       listQuery: {
         contentTitle: '',
         contentStatus: '',
@@ -234,59 +392,13 @@ export default {
       },
       dialogAuditVisible: false,
       deleteVisible: false,
-      auditTitle: '',
-      userDetailVisible: false,
-      userDetailData:[]
+      auditTitle: ''
     }
   },
   created() {
     this.fetchData()
   },
   methods: {
-    jumpToDetail(id){
-      console.log(id)
-      let that = this
-      this.userDetailVisible = true
-      this.userDetailData = [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
-      // this.$axios({
-      //   method: "post",
-      //   url: "/dataShare/download/findDownloadInfo",
-      //   contentType: "application/json; charset=UTF-8", // 解决415错误
-      //   headers: { "Content-Type": "application/json;charset=UTF-8" },
-      //   dataType: "json",
-      //   data: {rid: id},
-      // }).then((res) => {
-      //   // 注意：后端需要返回userID
-      //   //console.log(res.data);
-      //   var string1 = res.data; //储存数据
-      //   var dataNum = string1.length; //储存数据条数
-      //   for (var i = 0; i < dataNum; i++) {
-      //     var objectToInsert = JSON.parse(string1[i]);
-      //     that.blockContents.push(objectToInsert);
-      //   }
-      //   that.total = parseInt(that.blockContents.pop());
-      //   //console.log(that.blockContents);
-      // }).catch((error) => {
-      //   // alert(error);
-      //   console.log(error);
-      // });
-    },
     fetchData() {
       var that = this;
       this.tables = [];
@@ -319,17 +431,83 @@ export default {
         console.log(error)
       })
     },
+    submitForm: function (formName) {
+      var that = this;
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          if (that.form.fileList.length === 0) {
+            that.$message.error("您还未上传文件");
+          } else {
+            this.show = true;
+            let list = {
+              //email: that.email,
+              title: that.form.title,
+              abstracts: that.form.abstracts,
+              keyword: that.form.keyword,
+              authors: that.form.authors,
+              reason: that.form.reason,
+            };
+
+            let formData = new window.FormData();
+            formData.append(
+              "formData",
+              new Blob([JSON.stringify(list)], { type: "application/json" })
+            );
+            formData.append("file", that.form.fileList[0]);
+
+            this.$axios({
+              method: "post",
+              url: "/dataShare/resource/adminUpLoad",
+              headers: { "Content-Type": "multipart/form-data;charset=UTF-8" },
+              data: formData,
+              onUploadProgress: (progressEvent) => {
+                if (progressEvent.lengthComputable) {
+                  var complete =
+                    ((progressEvent.loaded / progressEvent.total) * 100) | 0;
+                  this.percent = complete;
+                  console.log("percent" + this.percent);
+                  if (complete >= 100) {
+                    setTimeout(() => {
+                      this.$refs["form"].resetFields();
+                      this.show = false;
+                      this.percent = 0; // 重新置0
+                    }, 2000);
+                  }
+                }
+              },
+            })
+              .then((res) => {
+                // 注意：后端需要返回userID
+                if (res.data === -1) {
+                  this.$message.error("上传失败");
+                } else {
+                  this.$message.success("上传成功");
+                }
+              })
+              .catch((error) => {
+                alert(error);
+                console.log(error);
+              });
+          }
+        }
+      });
+    },
     clickSearch() {
       this.listQuery.page = 1
       this.fetchData()
     },
-    getInFetchList(id, status, statusCheck) {
+    getInFetchList(id, status, statusCheck, reason) {
+      var check = 0; // 当check为1时，说明该数据侵权，不可在预览时下载
+      if(reason === '数据可能存在侵权行为，不允许上传'){
+        check = 1;
+      }
       this.$router.push({
           name: 'dataPreview',
           query: {
             id: id,
             status: status,
-            statusCheck: statusCheck
+            statusCheck: statusCheck,
+            check: check,
           }
         }
       )
@@ -340,7 +518,7 @@ export default {
       this.id = id
       this.statusApply = statusApply
       this.statusCheck = 'yes'
-      this.$refs['auditForm']!= undefined && this.$refs['auditForm'].resetFields()
+      this.$refs['auditForm'].resetFields()
     },
     auditNoList(id, statusApply) {
       this.auditTitle = "审核不通过"
@@ -348,7 +526,44 @@ export default {
       this.id = id
       this.statusApply = statusApply
       this.statusCheck = 'no'
-      this.$refs['auditForm']!= undefined && this.$refs['auditForm'].resetFields()
+      this.$refs['auditForm'].resetFields()
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
+    handleExceed(file, fileList) {
+      this.$message.warning(`当前限制选择 1 个文件`);
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+      this.form.fileList = fileList;
+    },
+    fileChange(file, fileList) {
+      let fileName = file.name;
+      let pos = fileName.lastIndexOf(".");
+      let lastName = fileName.substring(pos, fileName.length);
+      if (
+        lastName.toLowerCase() !== ".pdf" &&
+        lastName.toLowerCase() !== ".xls" &&
+        lastName.toLowerCase() !== ".xlsx" &&
+        lastName.toLowerCase() !== ".zip" &&
+        lastName.toLowerCase() !== ".png" &&
+        lastName.toLowerCase() !== ".jpg" &&
+        lastName.toLowerCase() !== ".csv"
+      ) {
+        fileList.pop();
+        this.$message.error(
+          "文件必须为.pdf .xls .xlsx .zip .png .jpg .csv类型"
+        );
+        return;
+      }
+      const isLt2M = file.size / 1024 / 1024 <= 300;
+      if (!isLt2M) {
+        fileList.pop();
+        this.$message.error("上传头像图片大小不能超过 300MB!");
+        return;
+      }
+      this.form.fileList.push(file.raw);
     },
     auditList(formName) {
       this.$refs[formName].validate(valid => {
@@ -423,8 +638,6 @@ export default {
               console.log(error)
             })
           }
-          this.dialogAuditVisible = false
-          this.reload()
         }
       })
     },
@@ -485,42 +698,21 @@ export default {
         console.log(error)
         this.deleteVisible = false
       })
-      this.reload()
     },
-    /*    onSearch() {
-          fetchMoreConditionConciseAuditList(this.listQuery.contentTitle,
-            this.listQuery.contentStatus,this.listQuery.auditStatus, this.listQuery.page,this.listQuery.limit).then(response=>{
-            this.tables=response.data.conciseAuditInfoDTOList
-            this.total=response.data.total
-          })
-        }*/
+    showComment(msg){
+      this.$alert(msg, '审核意见', {
+        confirmButtonText: '确定',
+        callback: action => {
+
+        }
+      });
+    },
   },
 }
 </script>
 
 <style scoped>
-  .dormitory{
-    padding: 15px;
-  }
-.dormitoryData{
-  display: grid;
-  overflow: hidden;
-}
-  .operationStyle{
-    margin-bottom: 3px;
-    margin-left:0;
-  }
-  .downloadInfo {
-    font-weight: normal;
-    width: 84px;
-    height: 30px;
-    font-size: 12px;
-    color: #ffffff;
-    background: #73a0fa !important;
-    border-radius: 13px;
-    border: 0px solid #73a0fa;
-    text-align: center;
-    line-height: 2.5em;
-    margin-right: 176px;
+  .demo-ruleForm {
+    margin-top: 0px;
   }
 </style>
