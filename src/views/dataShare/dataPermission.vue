@@ -116,7 +116,7 @@ export default {
 
     // 获取所有视图，供功能点3使用
     this.$axios
-    .get('http://localhost:8080/getAllViews')
+    .get('http://10.112.64.74:8765/getAllViews')
     .then((respond) => {
       respond.data.forEach(view => {
         // console.log("view: ", view);
@@ -167,7 +167,7 @@ export default {
         });
       });
       console.log(request)
-      this.$axios.post('http://localhost:8080/setViews', request)
+      this.$axios.post('http://10.112.64.74:8765/setViews', request)
       .then((response) => {
         console.log(response.data)
       })

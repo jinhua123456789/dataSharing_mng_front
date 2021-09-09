@@ -24,11 +24,11 @@ export default {
       }
       Promise.all([
         this.$axios.get(
-          'http://localhost:8080/getRelatedViews', 
+          'http://10.112.64.74:8765/getRelatedViews', 
           params
           ),
         this.$axios.get(
-          'http://localhost:8080/getRelationsByView',
+          'http://10.112.64.74:8765/getRelationsByView',
           params)])
       .then((res) => {
         console.log(res)
@@ -41,7 +41,7 @@ export default {
     } else {
       // 第一个功能点(查看全局ER图)触发该条件
       this.$axios.get(
-        'http://localhost:8080/getTables', 
+        'http://10.112.64.74:8765/getTables', 
         { 'viewName': this.$route.query.viewName })
       .then((res) => {
         this.tables = res.data;

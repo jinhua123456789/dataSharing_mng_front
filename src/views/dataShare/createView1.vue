@@ -43,7 +43,7 @@ export default {
     };
   },
   created() {
-    this.$axios.get("http://localhost:8080/getTables").then((res) => {
+    this.$axios.get("http://10.112.64.74:8765/getTables").then((res) => {
       this.tableData = res.data;
     });
   },

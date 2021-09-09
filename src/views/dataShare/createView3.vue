@@ -90,7 +90,7 @@ export default {
         conditions: this.relations
       }
       console.log(request)
-      this.$axios.post('http://localhost:8080/createView', request)
+      this.$axios.post('http://10.112.64.74:8765/createView', request)
       .then((response) => {
         console.log(response)
         if (response.status == 200) {
