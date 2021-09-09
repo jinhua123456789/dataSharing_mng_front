@@ -158,7 +158,7 @@ export const constantRoutes = [
     name: 'ContentAdd',
     meta: {
       title: '内容新增'
-    }
+    },
   },
   {
     path: '/contentSysWholeInfo',
@@ -167,7 +167,7 @@ export const constantRoutes = [
     name: 'ContentWholeInfo',
     meta: {
       title: '内容详情'
-    }
+    },
   },
   {
     path: '/contentSysModify',
@@ -176,7 +176,7 @@ export const constantRoutes = [
     name: 'ContentModify',
     meta: {
       title: '内容修改'
-    }
+    },
   },
   {
     path: '/auditSysWholeInfo',
@@ -185,17 +185,23 @@ export const constantRoutes = [
     name: 'AuditWholeInfo',
     meta: {
       title: '内容详情'
-    }
+    },
   },
-{
+  {
     path: '/dataPreview',
       component: () => import('@/views/dataShare/dataPreview'),
     hidden: true,
     name: 'dataPreview',
     meta: {
-    title: '数据预览'
-  }
-},
+      title: '数据预览'
+    },
+  },
+  {
+    path: '/erDiagram',
+    component: () => import('@/views/dataShare/erDiagram'),
+    hidden: true,
+    name: 'erDiagram',
+  },
 
   onlineRouter/*,
   checkAndAcceptRouter*/

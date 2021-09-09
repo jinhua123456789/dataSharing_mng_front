@@ -23,6 +23,7 @@ import * as filters from './filters' // global filters
 import formCreate from '@form-create/element-ui'
 import axios from 'axios'
 import echarts from 'echarts'
+import G6 from '@antv/g6'
 import './assets/css/font_93portal2/iconfont.css'
 import './assets/css/font_1522525_0hq7f17mrfak/iconfont.css'
 import './assets/css/font_1522525_pwgo8oftg4b/iconfont.css'
@@ -35,6 +36,7 @@ Vue.prototype.Cesium = Cesium
 Vue.prototype.widgets = widgets
 Vue.prototype.$axios = axios
 Vue.prototype.$echarts = echarts
+Vue.prototype.G6 = G6
 
 Vue.use(formCreate)
 

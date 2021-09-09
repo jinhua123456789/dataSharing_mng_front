@@ -119,7 +119,7 @@ export default {
       // console.log(this.tdata);
       // 忘记有v-model绑定了
       // for (let i = 0; i < this.tableData.length; i++) {
-      //   if (this.tdata.tablename == this.tableData[i].tname) {
+      //   if (this.tdata.tablename == this.tableData[i].name) {
       //     console.log(this.tdata.tablename);
       //     this.tableData[i].tData[this.tdata.tindex].available = this.tdata.available;
       console.log("after:", this.tableData);
