@@ -1,12 +1,6 @@
 
 <template>
-  <div class="dormitory">
-    <br>
-    <el-header  style=" background-color: #B3C0D1;
-    color: #333;
-    text-align:left;
-    height: 30px;line-height: 30px">外部用户管理</el-header>
-    <br>
+  <div class="dormitory" style="display:grid;justify-content: center;align-items: center">
     <br>
     <div class="searchWord">
       <!--  1-搜索框             -->
@@ -59,33 +53,33 @@
         fit
         highlight-current-row
         style="width: 100%">
-        <el-table-column label="姓名" align="center" width="180">
+        <el-table-column label="姓名" align="center" width="180px">
           <template slot-scope="{row}">
             <span>{{ row.name }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="性别" align="center" width="140">
+        <el-table-column label="性别" align="center" width="150px">
           <template slot-scope="{row}">
             <span v-if="row.gender === 'F'">女</span>
             <span v-if="row.gender === 'M'">男</span>
           </template>
         </el-table-column>
-        <el-table-column label="邮箱" align="center" width="250">
+        <el-table-column label="邮箱" align="center" width="210px">
           <template slot-scope="{row}">
             <span>{{ row.email }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="电话" align="center" width="200">
+        <el-table-column label="电话" align="center" width="180px">
           <template slot-scope="{row}">
             <span>{{ row.tel }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="机构" align="center" width="350">
+        <el-table-column label="机构" align="center" width="250px">
           <template slot-scope="{row}">
             <span>{{ row.organization }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="用户类型" align="center" width="350">
+        <el-table-column label="用户类型" align="center" width="150px">
           <template slot-scope="{row}">
             <span v-if="row.type === 'C'">普通用户</span>
             <span v-if="row.type === 'A'">管理员</span>
@@ -257,3 +251,11 @@
     }
   }
 </script>
+<style scoped>
+  .dormitory{
+
+  }
+  .dormitoryData{
+    overflow: hidden;
+  }
+</style>
